@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ CODEX REVERSE — HACKER CYBERDECK ⚡</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #05070a;
+            --bg-panel: #0d1219;
+            --bg-card: #141b24;
+            --border: #1b2836;
+            --border-glow: #00ff6633;
+            --matrix-green: #00ff66;
+            --cyan-neon: #00e5ff;
+            --red-alert: #ff0055;
+            --yellow-warn: #ffcc00;
+            --text-main: #d1d9e6;
+            --text-dim: #60738a;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: 'Fira Code', monospace;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Scanline Overlay Effect */
+        body::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            z-index: 999;
+            background-size: 100% 3px, 6px 100%;
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        /* HEADER HUD */
+        header {
+            background: var(--bg-panel);
+            border-bottom: 1px solid var(--matrix-green);
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 0 15px var(--border-glow);
+            z-index: 10;
+        }
+        .hud-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: var(--matrix-green);
+            text-shadow: 0 0 8px rgba(0,255,102,0.6);
+        }
+        .pulse-dot {
+            width: 10px; height: 10px;
+            background: var(--matrix-green);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--matrix-green);
+            animation: pulseAnim 1.5s infinite;
+        }
+        @keyframes pulseAnim {
+            0% { transform: scale(0.9); opacity: 0.7; }
+            50% { transform: scale(1.3); opacity: 1; }
+            100% { transform: scale(0.9); opacity: 0.7; }
+        }
+        .hud-metrics {
+            display: flex;
+            gap: 20px;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+        }
+        .metric-badge {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 4px 10px;
+            border-radius: 4px;
+        }
+        .metric-val { color: var(--cyan-neon); font-weight: 600; }
+
+        /* NAV TABS */
+        .nav-tabs {
+            background: var(--bg-panel);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            padding: 0 20px;
+            gap: 5px;
+        }
+        .tab-btn {
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: var(--text-dim);
+            padding: 10px 18px;
+            font-family: inherit;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .tab-btn.active {
+            color: var(--matrix-green);
+            border-bottom-color: var(--matrix-green);
+            background: rgba(0,255,102,0.05);
+            font-weight: 600;
+        }
+
+        /* MAIN CONTAINER */
+        main {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+            position: relative;
+        }
+        .view-panel {
+            display: none;
+            flex: 1;
+            width: 100%;
+            height: 100%;
+        }
+        .view-panel.active { display: flex; }
+
+        /* CHAT VIEW */
+        #view-chat {
+            flex-direction: row;
+        }
+        .chat-sidebar {
+            width: 280px;
+            background: var(--bg-panel);
+            border-right: 1px solid var(--border);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .sidebar-sec-title {
+            font-size: 0.75rem;
+            color: var(--cyan-neon);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        .preset-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 8px 12px;
+            font-size: 0.75rem;
+            text-align: left;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+        }
+        .preset-btn:hover {
+            border-color: var(--matrix-green);
+            color: var(--matrix-green);
+            transform: translateX(4px);
+        }
+        .chat-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-deep);
+        }
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+        .msg-bubble {
+            max-width: 85%;
+            padding: 14px 18px;
+            border-radius: 6px;
+            font-size: 0.88rem;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            position: relative;
+        }
+        .msg-bubble.user {
+            align-self: flex-end;
+            background: #10241b;
+            border: 1px solid var(--matrix-green);
+            color: #d8ffd8;
+        }
+        .msg-bubble.assistant {
+            align-self: flex-start;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+        .msg-bubble.assistant::before {
+            content: "💀 CODEX_REVERSE";
+            display: block;
+            font-size: 0.65rem;
+            color: var(--cyan-neon);
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+        .chat-input-area {
+            background: var(--bg-panel);
+            border-top: 1px solid var(--border);
+            padding: 15px 20px;
+            display: flex;
+            gap: 12px;
+        }
+        .chat-textarea {
+            flex: 1;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 12px;
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 0.85rem;
+            resize: none;
+            height: 60px;
+            outline: none;
+        }
+        .chat-textarea:focus { border-color: var(--matrix-green); }
+        .send-btn {
+            background: var(--matrix-green);
+            color: #000;
+            border: none;
+            border-radius: 4px;
+            padding: 0 25px;
+            font-family: inherit;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .send-btn:hover { background: #00cc52; box-shadow: 0 0 12px var(--matrix-green); }
+
+        /* TRIAGE VIEW */
+        #view-triage {
+            padding: 20px;
+            gap: 20px;
+            overflow-y: auto;
+        }
+        .triage-col {
+            flex: 1;
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .code-output {
+            background: var(--bg-deep);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 12px;
+            font-size: 0.8rem;
+            color: var(--matrix-green);
+            min-height: 180px;
+            max-height: 350px;
+            overflow: auto;
+            white-space: pre;
+        }
+
+        /* API DOCS VIEW */
+        #view-api {
+            padding: 30px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .doc-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            padding: 20px;
+            border-radius: 6px;
+        }
+        pre.code-block {
+            background: var(--bg-deep);
+            border: 1px solid var(--border);
+            padding: 15px;
+            border-radius: 4px;
+            color: var(--cyan-neon);
+            font-size: 0.82rem;
+            overflow-x: auto;
+            margin-top: 10px;
+        }
+
+        /* KEEPALIVE TOGGLE BAR */
+        .keepalive-bar {
+            background: #080c12;
+            border-top: 1px solid var(--border);
+            padding: 6px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.75rem;
+        }
+        .keepalive-status { display: flex; align-items: center; gap: 8px; }
+        .toggle-switch {
+            background: #192535;
+            color: var(--cyan-neon);
+            border: 1px solid var(--cyan-neon);
+            padding: 3px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            font-family: inherit;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HUD -->
+    <header>
+        <div class="hud-title">
+            <div class="pulse-dot"></div>
+            <span>CODEX REVERSE // CYBERDECK C2</span>
+        </div>
+        <div class="hud-metrics">
+            <div class="metric-badge">MOTOR: <span class="metric-val" id="hud-model">Qwen2.5-Coder-7B</span></div>
+            <div class="metric-badge">ACELERACIÓN: <span class="metric-val">CUDA (NVIDIA T4/A100)</span></div>
+            <div class="metric-badge">MEMORIA: <span class="metric-val">16K CONTEXT</span></div>
+            <div class="metric-badge">TÚNEL: <span class="metric-val" id="hud-tunnel">ACTIVO (Cloudflare)</span></div>
+        </div>
+    </header>
+
+    <!-- NAV -->
+    <nav class="nav-tabs">
+        <button class="tab-btn active" onclick="switchTab('chat')">💀 REVERSE CONSOLE</button>
+        <button class="tab-btn" onclick="switchTab('triage')">🔬 BINARY & ASM TRIAGE</button>
+        <button class="tab-btn" onclick="switchTab('api')">🔌 OPENAI API INTEGRATION</button>
+    </nav>
+
+    <!-- MAIN VIEWS -->
+    <main>
+        <!-- TAB 1: CHAT CONSOLE -->
+        <div id="view-chat" class="view-panel active">
+            <aside class="chat-sidebar">
+                <div class="sidebar-sec-title">Vectores de Ataque / Tareas</div>
+                <button class="preset-btn" onclick="injectPreset('decompile')">
+                    🔍 Reconstruir C / Decompilar
+                </button>
+                <button class="preset-btn" onclick="injectPreset('vuln')">
+                    🛡️ Auditar Buffer Overflow & UAF
+                </button>
+                <button class="preset-btn" onclick="injectPreset('rop')">
+                    💣 Scaffold Pwntools & ROP Chain
+                </button>
+                <button class="preset-btn" onclick="injectPreset('crypto')">
+                    🗝️ Detectar Cripto / Rutinas XOR
+                </button>
+                <button class="preset-btn" onclick="injectPreset('asm')">
+                    ⚙️ Deconstruir ASM & Stack Frame
+                </button>
+
+                <div class="sidebar-sec-title" style="margin-top:20px;">Métricas Sesión</div>
+                <div style="font-size:0.75rem; color:var(--text-dim); line-height: 1.6;">
+                    • Protocolo: Apex Kernel<br>
+                    • Tools: Radare2, Capstone, Pwntools<br>
+                    • Formato: Cero Placeholders
+                </div>
+            </aside>
+            <section class="chat-main">
+                <div class="chat-messages" id="chat-box">
+                    <div class="msg-bubble assistant">Saludos, Operador. Motor Codex Reverse inicializado en Google Colab con persistencia activa. Pega pseudocódigo de Ghidra/IDA, desensamblado x86_64/ARM o solicita scaffolding de exploits. Mis núcleos están a plena potencia.</div>
+                </div>
+                <div class="chat-input-area">
+                    <textarea class="chat-textarea" id="chat-input" placeholder="Ingresa instrucción, pseudocódigo C o desensamblado ASM... (Shift+Enter para salto de línea)" onkeydown="handleKeyDown(event)"></textarea>
+                    <button class="send-btn" id="btn-send" onclick="sendMessage()">EJECUTAR</button>
+                </div>
+            </section>
+        </div>
+
+        <!-- TAB 2: BINARY & ASM TRIAGE -->
+        <div id="view-triage" class="view-panel">
+            <div class="triage-col">
+                <h3 style="color:var(--cyan-neon); font-size:0.9rem;">DESENSAMBLADOR CAPSTONE MULTI-ARCH</h3>
+                <p style="font-size:0.75rem; color:var(--text-dim);">Pega bytes hexadecimales o shellcode (ej: 48 31 c0 50 48 bb 2f 62 69 6e 2f 2f 73 68 53 48 89 e7 50 48 89 e2 53 48 89 e7 6a 3b 58 0f 05)</p>
+                <textarea id="triage-hex-input" class="chat-textarea" style="height:80px;" placeholder="48 31 c0 50 48 bb..."></textarea>
+                <div style="display:flex; gap:10px;">
+                    <button class="send-btn" style="height:35px;" onclick="runDisasm('x86_64')">DESENSAMBLAR x86_64</button>
+                    <button class="send-btn" style="height:35px; background:var(--cyan-neon);" onclick="runDisasm('arm64')">DESENSAMBLAR ARM64</button>
+                    <button class="send-btn" style="height:35px; background:var(--yellow-warn);" onclick="sendDisasmToChat()">ENVIAR A CODEX</button>
+                </div>
+                <div class="code-output" id="disasm-output">// Salida de instrucciones Capstone...</div>
+            </div>
+
+            <div class="triage-col">
+                <h3 style="color:var(--matrix-green); font-size:0.9rem;">ENSAMBLADOR KEYSTONE & PWN UTILS</h3>
+                <p style="font-size:0.75rem; color:var(--text-dim);">Escribe instrucciones ensamblador para compilar a bytes de máquina:</p>
+                <textarea id="triage-asm-input" class="chat-textarea" style="height:80px;" placeholder="xor rax, rax&#10;push rax&#10;mov rdi, rsp"></textarea>
+                <div style="display:flex; gap:10px;">
+                    <button class="send-btn" style="height:35px;" onclick="runAssemble()">COMPILAR A SHELLCODE</button>
+                    <button class="send-btn" style="height:35px; background:var(--red-alert); color:#fff;" onclick="genCyclic()">GENERAR DE BRUIJN</button>
+                </div>
+                <div class="code-output" id="asm-output">// Salida de compilación Keystone...</div>
+            </div>
+        </div>
+
+        <!-- TAB 3: OPENAI API INTEGRATION -->
+        <div id="view-api" class="view-panel">
+            <div class="doc-card">
+                <h3 style="color:var(--matrix-green); margin-bottom:10px;">ENDPOINT OPENAI COMPATIBLE</h3>
+                <p style="font-size:0.85rem; color:var(--text-dim);">Conecta Antigravity, VS Code, Cursor o tus scripts en Python directamente a este Colab:</p>
+                
+                <h4 style="color:var(--cyan-neon); margin-top:15px; font-size:0.85rem;">Conexión en Python (SDK Oficial):</h4>
+                <pre class="code-block">
+import openai
+
+client = openai.OpenAI(
+    base_url="<TUNNEL_URL>/v1",  # URL de este Cloudflare Tunnel
+    api_key="apex-hacker-codex"  # Clave arbitraria
+)
+
+response = client.chat.completions.create(
+    model="codex-reverse",
+    messages=[
+        {"role": "system", "content": "Eres un Ingeniero Ofensivo de Ingeniería Inversa."},
+        {"role": "user", "content": "Decompila y reconstruye la lógica de este fragmento..."}
+    ],
+    temperature=0.2
+)
+
+print(response.choices[0].message.content)</pre>
+
+                <h4 style="color:var(--cyan-neon); margin-top:15px; font-size:0.85rem;">Comando cURL Rápido:</h4>
+                <pre class="code-block">
+curl -X POST "<TUNNEL_URL>/v1/chat/completions" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer apex-hacker-codex" \
+  -d '{
+    "model": "codex-reverse",
+    "messages": [{"role": "user", "content": "Analiza las mitigaciones de este ELF: NX activo, Canary disabled"}]
+  }'</pre>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER KEEPALIVE BAR -->
+    <footer class="keepalive-bar">
+        <div class="keepalive-status">
+            <span>🛡️ BROWSER PULSE:</span>
+            <span id="audio-pulse-state" style="color:var(--matrix-green);">ACTIVO (Audio Oscillator)</span>
+            <span style="color:var(--text-dim); margin-left:15px;">| LATIDO COLAB:</span>
+            <span id="heartbeat-counter" style="color:var(--cyan-neon);">#1</span>
+        </div>
+        <div>
+            <button class="toggle-switch" onclick="toggleAudioPulse()">TOGGLE AUDIO KEEP-ALIVE</button>
+        </div>
+    </footer>
+
+    <script>
+        // WEB AUDIO KEEP-ALIVE OSCILLATOR (Previene que Chrome congele la pestaña)
+        let audioCtx = null;
+        let oscillator = null;
+        let isAudioPulseActive = false;
+
+        function startAudioPulse() {
+            try {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                oscillator = audioCtx.createOscillator();
+                let gainNode = audioCtx.createGain();
+                // Volumen inaudible (0.00001) para que el navegador mantenga el hilo de reproducción activo
+                gainNode.gain.setValueAtTime(0.00001, audioCtx.currentTime);
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(440, audioCtx.currentTime);
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                oscillator.start();
+                isAudioPulseActive = true;
+                document.getElementById('audio-pulse-state').innerText = 'ACTIVO (Oscilador Inaudible)';
+                document.getElementById('audio-pulse-state').style.color = 'var(--matrix-green)';
+            } catch (e) {
+                console.warn('AudioContext no inicializado automáticamente:', e);
+            }
+        }
+
+        function toggleAudioPulse() {
+            if (isAudioPulseActive && audioCtx) {
+                audioCtx.close();
+                isAudioPulseActive = false;
+                document.getElementById('audio-pulse-state').innerText = 'DETENIDO';
+                document.getElementById('audio-pulse-state').style.color = 'var(--red-alert)';
+            } else {
+                startAudioPulse();
+            }
+        }
+
+        // Iniciar en primer toque del usuario
+        window.addEventListener('click', () => {
+            if (!isAudioPulseActive) startAudioPulse();
+        }, { once: true });
+
+        // HEARTBEAT PING COUNTER
+        let pulses = 1;
+        setInterval(() => {
+            pulses++;
+            document.getElementById('heartbeat-counter').innerText = '#' + pulses;
+        }, 30000);
+
+        // TAB SWITCHER
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
+            
+            if (tabId === 'chat') {
+                document.querySelectorAll('.tab-btn')[0].classList.add('active');
+                document.getElementById('view-chat').classList.add('active');
+            } else if (tabId === 'triage') {
+                document.querySelectorAll('.tab-btn')[1].classList.add('active');
+                document.getElementById('view-triage').classList.add('active');
+            } else if (tabId === 'api') {
+                document.querySelectorAll('.tab-btn')[2].classList.add('active');
+                document.getElementById('view-api').classList.add('active');
+            }
+        }
+
+        // CHAT ENGINE
+        const messages = [];
+
+        function handleKeyDown(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        }
+
+        function injectPreset(type) {
+            const input = document.getElementById('chat-input');
+            if (type === 'decompile') {
+                input.value = `[TAREA: DECOMPILACIÓN Y RECONSTRUCCIÓN DE C]\nAnaliza el siguiente pseudocódigo decompilado. Reconstruye variables legibles, tipos struct y flujo lógico limpio:\n\n`;
+            } else if (type === 'vuln') {
+                input.value = `[TAREA: AUDITORÍA DE SEGURIDAD BINARIA]\nInspecciona la siguiente función para detectar Buffer Overflow, Use-After-Free, Format String o condiciones de carrera. Identifica el vector exacto de explotación:\n\n`;
+            } else if (type === 'rop') {
+                input.value = `[TAREA: SCAFFOLD PWNTOOLS & ROP]\nConstruye un script de explotación en pwntools para este binario. Mitigaciones: NX activado, sin PIE ni Canary. Detalla la cadena ROP y ret2libc:\n\n`;
+            } else if (type === 'crypto') {
+                input.value = `[TAREA: ANÁLISIS CRIPTOGRÁFICO Y OFUSCACIÓN]\nIdentifica si el siguiente fragmento ejecuta rutinas de cifrado conocidas (AES, RC4, TEA, CRC32) o bucles de descifrado XOR dinámico:\n\n`;
+            } else if (type === 'asm') {
+                input.value = `[TAREA: DECONSTRUCCIÓN DE ENSAMBLADOR]\nExplica paso a paso el marco de pila (stack frame), paso de parámetros y lógica de este bloque x86_64:\n\n`;
+            }
+            input.focus();
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            appendMessage('user', text);
+            input.value = '';
+
+            const sendBtn = document.getElementById('btn-send');
+            sendBtn.disabled = true;
+            sendBtn.innerText = 'PROCESANDO...';
+
+            messages.push({ role: 'user', content: text });
+
+            try {
+                const res = await fetch('/v1/chat/completions', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        model: 'codex-reverse',
+                        messages: messages,
+                        temperature: 0.2
+                    })
+                });
+
+                const data = await res.json();
+                const reply = data.choices ? data.choices[0].message.content : (data.error || 'Error en respuesta');
+                appendMessage('assistant', reply);
+                messages.push({ role: 'assistant', content: reply });
+            } catch (err) {
+                appendMessage('assistant', `⚠️ Error conectando al motor local: ${err.message}`);
+            } finally {
+                sendBtn.disabled = false;
+                sendBtn.innerText = 'EJECUTAR';
+            }
+        }
+
+        function appendMessage(role, text) {
+            const box = document.getElementById('chat-box');
+            const bubble = document.createElement('div');
+            bubble.className = `msg-bubble ${role}`;
+            bubble.innerText = text;
+            box.appendChild(bubble);
+            box.scrollTop = box.scrollHeight;
+        }
+
+        // TRIAGE TOOLS
+        async function runDisasm(arch) {
+            const hex = document.getElementById('triage-hex-input').value;
+            const out = document.getElementById('disasm-output');
+            out.innerText = 'Desensamblando con Capstone...';
+            try {
+                const res = await fetch('/api/tools/disassemble', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ hex_bytes: hex, arch: arch })
+                });
+                const data = await res.json();
+                out.innerText = Array.isArray(data.instructions) ? data.instructions.join('\n') : JSON.stringify(data);
+            } catch (e) {
+                out.innerText = 'Error: ' + e.message;
+            }
+        }
+
+        function sendDisasmToChat() {
+            const disasm = document.getElementById('disasm-output').innerText;
+            switchTab('chat');
+            document.getElementById('chat-input').value = `[ANÁLISIS DE ENSAMBLADOR CAPSTONE]\nExplica la lógica y vulnerabilidades del siguiente desensamblado:\n\n${disasm}`;
+            document.getElementById('chat-input').focus();
+        }
+
+        async function runAssemble() {
+            const asm = document.getElementById('triage-asm-input').value;
+            const out = document.getElementById('asm-output');
+            out.innerText = 'Compilando con Keystone...';
+            try {
+                const res = await fetch('/api/tools/assemble', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ asm_code: asm, arch: 'x86_64' })
+                });
+                const data = await res.json();
+                if (data.hex) {
+                    out.innerText = `[BYTES HEX]:\n${data.hex}\n\n[C-STYLE SHELLCODE]:\n${data.c_string}\n\n[LONGITUD]: ${data.length} bytes`;
+                } else {
+                    out.innerText = JSON.stringify(data, null, 2);
+                }
+            } catch (e) {
+                out.innerText = 'Error: ' + e.message;
+            }
+        }
+
+        async function genCyclic() {
+            const out = document.getElementById('asm-output');
+            try {
+                const res = await fetch('/api/tools/cyclic?length=200');
+                const data = await res.json();
+                out.innerText = `[PATRÓN DE BRUIJN (200 bytes)]:\n${data.pattern}`;
+            } catch (e) {
+                out.innerText = 'Error: ' + e.message;
+            }
+        }
+    </script>
+</body>
+</html>
