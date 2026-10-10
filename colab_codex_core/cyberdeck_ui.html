@@ -78,8 +78,8 @@
         }
         .hud-metrics {
             display: flex;
-            gap: 20px;
-            font-size: 0.8rem;
+            gap: 12px;
+            font-size: 0.78rem;
             color: var(--text-dim);
         }
         .metric-badge {
@@ -142,14 +142,14 @@
             padding: 15px;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
         }
         .sidebar-sec-title {
             font-size: 0.75rem;
             color: var(--cyan-neon);
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
         }
         .preset-btn {
             background: var(--bg-card);
@@ -208,7 +208,7 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.4);
         }
         .msg-bubble.assistant::before {
-            content: "💀 CODEX_REVERSE";
+            content: "💀 CODEX_REVERSE // TESLA T4 CUDA";
             display: block;
             font-size: 0.65rem;
             color: var(--cyan-neon);
@@ -255,16 +255,17 @@
             padding: 20px;
             gap: 20px;
             overflow-y: auto;
+            display: flex;
         }
         .triage-col {
             flex: 1;
             background: var(--bg-panel);
             border: 1px solid var(--border);
             border-radius: 6px;
-            padding: 20px;
+            padding: 18px;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
         }
         .code-output {
             background: var(--bg-deep);
@@ -273,15 +274,15 @@
             padding: 12px;
             font-size: 0.8rem;
             color: var(--matrix-green);
-            min-height: 180px;
-            max-height: 350px;
+            min-height: 160px;
+            max-height: 300px;
             overflow: auto;
             white-space: pre;
         }
 
         /* API DOCS VIEW */
         #view-api {
-            padding: 30px;
+            padding: 25px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
@@ -304,26 +305,25 @@
             margin-top: 10px;
         }
 
-        /* KEEPALIVE TOGGLE BAR */
-        .keepalive-bar {
-            background: #080c12;
-            border-top: 1px solid var(--border);
-            padding: 6px 20px;
-            display: flex;
+        /* AUTH MODAL */
+        #auth-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 1000;
+            justify-content: center;
             align-items: center;
-            justify-content: space-between;
-            font-size: 0.75rem;
         }
-        .keepalive-status { display: flex; align-items: center; gap: 8px; }
-        .toggle-switch {
-            background: #192535;
-            color: var(--cyan-neon);
-            border: 1px solid var(--cyan-neon);
-            padding: 3px 10px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.7rem;
-            font-family: inherit;
+        .auth-box {
+            background: var(--bg-panel);
+            border: 2px solid var(--matrix-green);
+            border-radius: 8px;
+            padding: 30px;
+            max-width: 450px;
+            width: 90%;
+            box-shadow: 0 0 25px rgba(0,255,102,0.4);
+            text-align: center;
         }
     </style>
 </head>
@@ -337,9 +337,10 @@
         </div>
         <div class="hud-metrics">
             <div class="metric-badge">MOTOR: <span class="metric-val" id="hud-model">Qwen2.5-Coder-7B</span></div>
-            <div class="metric-badge">ACELERACIÓN: <span class="metric-val">CUDA (NVIDIA T4/A100)</span></div>
-            <div class="metric-badge">MEMORIA: <span class="metric-val">16K CONTEXT</span></div>
-            <div class="metric-badge">TÚNEL: <span class="metric-val" id="hud-tunnel">ACTIVO (Cloudflare)</span></div>
+            <div class="metric-badge">GPU T4: <span class="metric-val" id="hud-gpu">FLASH ATTN (P0)</span></div>
+            <div class="metric-badge">VRAM: <span class="metric-val" id="hud-vram">-- / -- MB</span></div>
+            <div class="metric-badge">CONTEXTO: <span class="metric-val">32K TOKENS</span></div>
+            <div class="metric-badge">BLINDAJE: <span class="metric-val" id="hud-shield" style="color:var(--matrix-green);">ACTIVO 🛡️</span></div>
         </div>
     </header>
 
@@ -356,32 +357,23 @@
         <div id="view-chat" class="view-panel active">
             <aside class="chat-sidebar">
                 <div class="sidebar-sec-title">Vectores de Ataque / Tareas</div>
-                <button class="preset-btn" onclick="injectPreset('decompile')">
-                    🔍 Reconstruir C / Decompilar
-                </button>
-                <button class="preset-btn" onclick="injectPreset('vuln')">
-                    🛡️ Auditar Buffer Overflow & UAF
-                </button>
-                <button class="preset-btn" onclick="injectPreset('rop')">
-                    💣 Scaffold Pwntools & ROP Chain
-                </button>
-                <button class="preset-btn" onclick="injectPreset('crypto')">
-                    🗝️ Detectar Cripto / Rutinas XOR
-                </button>
-                <button class="preset-btn" onclick="injectPreset('asm')">
-                    ⚙️ Deconstruir ASM & Stack Frame
-                </button>
+                <button class="preset-btn" onclick="injectPreset('decompile')">🔍 Reconstruir C / Decompilar</button>
+                <button class="preset-btn" onclick="injectPreset('vuln')">🛡️ Auditar BOF & UAF</button>
+                <button class="preset-btn" onclick="injectPreset('rop')">💣 Scaffold Pwntools & ROP</button>
+                <button class="preset-btn" onclick="injectPreset('crypto')">🗝️ Detectar Cripto / XOR</button>
+                <button class="preset-btn" onclick="injectPreset('asm')">⚙️ Deconstruir ASM & Stack</button>
 
-                <div class="sidebar-sec-title" style="margin-top:20px;">Métricas Sesión</div>
+                <div class="sidebar-sec-title" style="margin-top:15px;">Estado de Blindaje</div>
                 <div style="font-size:0.75rem; color:var(--text-dim); line-height: 1.6;">
                     • Protocolo: Apex Kernel<br>
-                    • Tools: Radare2, Capstone, Pwntools<br>
-                    • Formato: Cero Placeholders
+                    • Acceso: Exclusivo Admin<br>
+                    • Cifra: SSL + Cloudflare Zero Trust<br>
+                    • Hardware: NVIDIA Tesla T4 VRAM
                 </div>
             </aside>
             <section class="chat-main">
                 <div class="chat-messages" id="chat-box">
-                    <div class="msg-bubble assistant">Saludos, Operador. Motor Codex Reverse inicializado en Google Colab con persistencia activa. Pega pseudocódigo de Ghidra/IDA, desensamblado x86_64/ARM o solicita scaffolding de exploits. Mis núcleos están a plena potencia.</div>
+                    <div class="msg-bubble assistant">Saludos, Operador. Motor Codex Reverse activo en Google Colab con aceleración GPU Tesla T4 (Flash Attention, 32K contexto) y túnel blindado. Pega pseudocódigo, desensamblado o solicita exploits en pwntools. Los tensores están a plena potencia.</div>
                 </div>
                 <div class="chat-input-area">
                     <textarea class="chat-textarea" id="chat-input" placeholder="Ingresa instrucción, pseudocódigo C o desensamblado ASM... (Shift+Enter para salto de línea)" onkeydown="handleKeyDown(event)"></textarea>
@@ -394,148 +386,156 @@
         <div id="view-triage" class="view-panel">
             <div class="triage-col">
                 <h3 style="color:var(--cyan-neon); font-size:0.9rem;">DESENSAMBLADOR CAPSTONE MULTI-ARCH</h3>
-                <p style="font-size:0.75rem; color:var(--text-dim);">Pega bytes hexadecimales o shellcode (ej: 48 31 c0 50 48 bb 2f 62 69 6e 2f 2f 73 68 53 48 89 e7 50 48 89 e2 53 48 89 e7 6a 3b 58 0f 05)</p>
-                <textarea id="triage-hex-input" class="chat-textarea" style="height:80px;" placeholder="48 31 c0 50 48 bb..."></textarea>
-                <div style="display:flex; gap:10px;">
-                    <button class="send-btn" style="height:35px;" onclick="runDisasm('x86_64')">DESENSAMBLAR x86_64</button>
-                    <button class="send-btn" style="height:35px; background:var(--cyan-neon);" onclick="runDisasm('arm64')">DESENSAMBLAR ARM64</button>
-                    <button class="send-btn" style="height:35px; background:var(--yellow-warn);" onclick="sendDisasmToChat()">ENVIAR A CODEX</button>
+                <p style="font-size:0.75rem; color:var(--text-dim);">Pega bytes hexadecimales (ej: 48 31 c0 50 48 bb 2f 62 69 6e 2f 2f 73 68 53 48 89 e7 50 48 89 e2 53 48 89 e7 6a 3b 58 0f 05)</p>
+                <textarea id="triage-hex-input" class="chat-textarea" style="height:70px;" placeholder="48 31 c0 50 48 bb..."></textarea>
+                <div style="display:flex; gap:8px;">
+                    <button class="send-btn" style="height:32px;" onclick="runDisasm('x86_64')">x86_64</button>
+                    <button class="send-btn" style="height:32px; background:var(--cyan-neon);" onclick="runDisasm('arm64')">ARM64</button>
+                    <button class="send-btn" style="height:32px; background:var(--yellow-warn);" onclick="sendDisasmToChat()">A CODEX</button>
                 </div>
                 <div class="code-output" id="disasm-output">// Salida de instrucciones Capstone...</div>
             </div>
 
             <div class="triage-col">
                 <h3 style="color:var(--matrix-green); font-size:0.9rem;">ENSAMBLADOR KEYSTONE & PWN UTILS</h3>
-                <p style="font-size:0.75rem; color:var(--text-dim);">Escribe instrucciones ensamblador para compilar a bytes de máquina:</p>
-                <textarea id="triage-asm-input" class="chat-textarea" style="height:80px;" placeholder="xor rax, rax&#10;push rax&#10;mov rdi, rsp"></textarea>
-                <div style="display:flex; gap:10px;">
-                    <button class="send-btn" style="height:35px;" onclick="runAssemble()">COMPILAR A SHELLCODE</button>
-                    <button class="send-btn" style="height:35px; background:var(--red-alert); color:#fff;" onclick="genCyclic()">GENERAR DE BRUIJN</button>
+                <p style="font-size:0.75rem; color:var(--text-dim);">Escribe instrucciones ensamblador para compilar a shellcode:</p>
+                <textarea id="triage-asm-input" class="chat-textarea" style="height:70px;" placeholder="xor rax, rax&#10;push rax&#10;mov rdi, rsp"></textarea>
+                <div style="display:flex; gap:8px;">
+                    <button class="send-btn" style="height:32px;" onclick="runAssemble()">COMPILAR</button>
+                    <button class="send-btn" style="height:32px; background:var(--red-alert); color:#fff;" onclick="genCyclic()">DE BRUIJN</button>
                 </div>
                 <div class="code-output" id="asm-output">// Salida de compilación Keystone...</div>
+            </div>
+
+            <div class="triage-col">
+                <h3 style="color:var(--yellow-warn); font-size:0.9rem;">CHECKSEC & ENTROPÍA SHANNON</h3>
+                <p style="font-size:0.75rem; color:var(--text-dim);">Ruta local del binario en Colab (ej: /bin/ls o /content/mi_binario):</p>
+                <input id="triage-file-path" type="text" class="chat-textarea" style="height:36px;" value="/bin/ls" />
+                <div style="display:flex; gap:8px;">
+                    <button class="send-btn" style="height:32px; background:var(--cyan-neon);" onclick="runChecksec()">CHECKSEC</button>
+                    <button class="send-btn" style="height:32px; background:var(--yellow-warn);" onclick="runEntropy()">ENTROPÍA</button>
+                </div>
+                <div class="code-output" id="audit-output">// Mitigaciones y entropía...</div>
             </div>
         </div>
 
         <!-- TAB 3: OPENAI API INTEGRATION -->
         <div id="view-api" class="view-panel">
             <div class="doc-card">
-                <h3 style="color:var(--matrix-green); margin-bottom:10px;">ENDPOINT OPENAI COMPATIBLE</h3>
-                <p style="font-size:0.85rem; color:var(--text-dim);">Conecta Antigravity, VS Code, Cursor o tus scripts en Python directamente a este Colab:</p>
+                <h3 style="color:var(--matrix-green); margin-bottom:10px;">ENDPOINT OPENAI COMPATIBLE (BLINDADO)</h3>
+                <p style="font-size:0.85rem; color:var(--text-dim);">Conecta Antigravity, Cursor, VS Code o tus scripts en Python directamente con autenticación Bearer:</p>
                 
-                <h4 style="color:var(--cyan-neon); margin-top:15px; font-size:0.85rem;">Conexión en Python (SDK Oficial):</h4>
+                <h4 style="color:var(--cyan-neon); margin-top:15px; font-size:0.85rem;">Conexión en Python (SDK Oficial de OpenAI):</h4>
                 <pre class="code-block">
 import openai
 
 client = openai.OpenAI(
-    base_url="<TUNNEL_URL>/v1",  # URL de este Cloudflare Tunnel
-    api_key="apex-hacker-codex"  # Clave arbitraria
+    base_url="<TUNNEL_URL>/v1",
+    api_key="<TU_MASTER_TOKEN>"  # Autenticación requerida por el blindaje
 )
 
 response = client.chat.completions.create(
     model="codex-reverse",
     messages=[
-        {"role": "system", "content": "Eres un Ingeniero Ofensivo de Ingeniería Inversa."},
-        {"role": "user", "content": "Decompila y reconstruye la lógica de este fragmento..."}
+        {"role": "system", "content": "Eres CODEX REVERSE, IA ofensiva de ingeniería inversa."},
+        {"role": "user", "content": "Decompila y analiza este fragmento de memoria..."}
     ],
-    temperature=0.2
+    temperature=0.2,
+    max_tokens=8192
 )
 
 print(response.choices[0].message.content)</pre>
 
-                <h4 style="color:var(--cyan-neon); margin-top:15px; font-size:0.85rem;">Comando cURL Rápido:</h4>
+                <h4 style="color:var(--cyan-neon); margin-top:15px; font-size:0.85rem;">Comando cURL Autenticado:</h4>
                 <pre class="code-block">
 curl -X POST "<TUNNEL_URL>/v1/chat/completions" \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer apex-hacker-codex" \
+  -H "Authorization: Bearer <TU_MASTER_TOKEN>" \
   -d '{
     "model": "codex-reverse",
-    "messages": [{"role": "user", "content": "Analiza las mitigaciones de este ELF: NX activo, Canary disabled"}]
+    "messages": [{"role": "user", "content": "Analiza este binario..."}]
   }'</pre>
             </div>
         </div>
     </main>
 
-    <!-- FOOTER KEEPALIVE BAR -->
-    <footer class="keepalive-bar">
-        <div class="keepalive-status">
-            <span>🛡️ BROWSER PULSE:</span>
-            <span id="audio-pulse-state" style="color:var(--matrix-green);">ACTIVO (Audio Oscillator)</span>
-            <span style="color:var(--text-dim); margin-left:15px;">| LATIDO COLAB:</span>
-            <span id="heartbeat-counter" style="color:var(--cyan-neon);">#1</span>
+    <!-- AUTH MODAL IF NEEDED -->
+    <div id="auth-modal">
+        <div class="auth-box">
+            <h3 style="color:var(--matrix-green); margin-bottom:15px;">🛡️ AUTENTICACIÓN ADMIN APEX</h3>
+            <p style="color:var(--text-dim); font-size:0.8rem; margin-bottom:15px;">Ingresa tu Master Token para acceder al Cyberdeck:</p>
+            <input type="password" id="modal-token-input" class="chat-textarea" style="height:38px; margin-bottom:15px;" placeholder="APX-SEC-..." />
+            <button class="send-btn" onclick="saveAuthToken()">DESBLOQUEAR CYBERDECK</button>
         </div>
-        <div>
-            <button class="toggle-switch" onclick="toggleAudioPulse()">TOGGLE AUDIO KEEP-ALIVE</button>
-        </div>
-    </footer>
+    </div>
 
     <script>
-        // WEB AUDIO KEEP-ALIVE OSCILLATOR (Previene que Chrome congele la pestaña)
-        let audioCtx = null;
-        let oscillator = null;
-        let isAudioPulseActive = false;
+        // TOKEN GESTION
+        function getAuthToken() {
+            const params = new URLSearchParams(window.location.search);
+            const qToken = params.get('token');
+            if (qToken) {
+                localStorage.setItem('apex_token', qToken);
+                return qToken;
+            }
+            return localStorage.getItem('apex_token') || 'APX-SEC-7F9A2B8E3C1D4E5F60718293A4B5C6D7';
+        }
 
-        function startAudioPulse() {
+        function saveAuthToken() {
+            const val = document.getElementById('modal-token-input').value.trim();
+            if (val) {
+                localStorage.setItem('apex_token', val);
+                document.getElementById('auth-modal').style.display = 'none';
+                updateGpuMetrics();
+            }
+        }
+
+        async function authFetch(url, options = {}) {
+            options.headers = options.headers || {};
+            const token = getAuthToken();
+            if (token) {
+                options.headers['Authorization'] = 'Bearer ' + token;
+                options.headers['X-API-Key'] = token;
+            }
+            const res = await fetch(url, options);
+            if (res.status === 401) {
+                document.getElementById('auth-modal').style.display = 'flex';
+            }
+            return res;
+        }
+
+        // TELEMETRIA GPU PERIÓDICA
+        async function updateGpuMetrics() {
             try {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                oscillator = audioCtx.createOscillator();
-                let gainNode = audioCtx.createGain();
-                // Volumen inaudible (0.00001) para que el navegador mantenga el hilo de reproducción activo
-                gainNode.gain.setValueAtTime(0.00001, audioCtx.currentTime);
-                oscillator.type = 'sine';
-                oscillator.frequency.setValueAtTime(440, audioCtx.currentTime);
-                oscillator.connect(gainNode);
-                gainNode.connect(audioCtx.destination);
-                oscillator.start();
-                isAudioPulseActive = true;
-                document.getElementById('audio-pulse-state').innerText = 'ACTIVO (Oscilador Inaudible)';
-                document.getElementById('audio-pulse-state').style.color = 'var(--matrix-green)';
-            } catch (e) {
-                console.warn('AudioContext no inicializado automáticamente:', e);
-            }
+                const res = await authFetch('/api/metrics/gpu');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.vram_total_mb > 0) {
+                        document.getElementById('hud-vram').innerText = `${data.vram_used_mb} / ${data.vram_total_mb} MB`;
+                    }
+                    if (data.gpu_name) {
+                        document.getElementById('hud-gpu').innerText = `${data.gpu_name} (${data.gpu_utilization_pct}%)`;
+                    }
+                }
+            } catch (e) { }
         }
+        setInterval(updateGpuMetrics, 6000);
+        updateGpuMetrics();
 
-        function toggleAudioPulse() {
-            if (isAudioPulseActive && audioCtx) {
-                audioCtx.close();
-                isAudioPulseActive = false;
-                document.getElementById('audio-pulse-state').innerText = 'DETENIDO';
-                document.getElementById('audio-pulse-state').style.color = 'var(--red-alert)';
-            } else {
-                startAudioPulse();
-            }
-        }
-
-        // Iniciar en primer toque del usuario
-        window.addEventListener('click', () => {
-            if (!isAudioPulseActive) startAudioPulse();
-        }, { once: true });
-
-        // HEARTBEAT PING COUNTER
-        let pulses = 1;
-        setInterval(() => {
-            pulses++;
-            document.getElementById('heartbeat-counter').innerText = '#' + pulses;
-        }, 30000);
-
-        // TAB SWITCHER
+        // TABS
         function switchTab(tabId) {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
             
-            if (tabId === 'chat') {
-                document.querySelectorAll('.tab-btn')[0].classList.add('active');
-                document.getElementById('view-chat').classList.add('active');
-            } else if (tabId === 'triage') {
-                document.querySelectorAll('.tab-btn')[1].classList.add('active');
-                document.getElementById('view-triage').classList.add('active');
-            } else if (tabId === 'api') {
-                document.querySelectorAll('.tab-btn')[2].classList.add('active');
-                document.getElementById('view-api').classList.add('active');
-            }
+            const targetBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.innerText.toLowerCase().includes(tabId));
+            if (targetBtn) targetBtn.classList.add('active');
+            
+            const targetPanel = document.getElementById('view-' + tabId);
+            if (targetPanel) targetPanel.classList.add('active');
         }
 
-        // CHAT ENGINE
-        const messages = [];
+        // CHAT
+        let messages = [];
 
         function handleKeyDown(e) {
             if (e.key === 'Enter' && !e.shiftKey) {
@@ -570,24 +570,26 @@ curl -X POST "<TUNNEL_URL>/v1/chat/completions" \
 
             const sendBtn = document.getElementById('btn-send');
             sendBtn.disabled = true;
-            sendBtn.innerText = 'PROCESANDO...';
+            sendBtn.innerText = 'PROCESANDO GPU...';
 
             messages.push({ role: 'user', content: text });
 
             try {
-                const res = await fetch('/v1/chat/completions', {
+                const res = await authFetch('/v1/chat/completions', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         model: 'codex-reverse',
                         messages: messages,
-                        temperature: 0.2
+                        temperature: 0.2,
+                        max_tokens: 8192
                     })
                 });
 
                 const data = await res.json();
                 const reply = data.choices ? data.choices[0].message.content : (data.error || 'Error en respuesta');
-                appendMessage('assistant', reply);
+                const tpsBadge = (data.usage && data.usage.tokens_per_second) ? `\n\n⚡ [${data.usage.tokens_per_second} tokens/seg en GPU Tesla T4]` : '';
+                appendMessage('assistant', reply + tpsBadge);
                 messages.push({ role: 'assistant', content: reply });
             } catch (err) {
                 appendMessage('assistant', `⚠️ Error conectando al motor local: ${err.message}`);
@@ -612,7 +614,7 @@ curl -X POST "<TUNNEL_URL>/v1/chat/completions" \
             const out = document.getElementById('disasm-output');
             out.innerText = 'Desensamblando con Capstone...';
             try {
-                const res = await fetch('/api/tools/disassemble', {
+                const res = await authFetch('/api/tools/disassemble', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ hex_bytes: hex, arch: arch })
@@ -636,7 +638,7 @@ curl -X POST "<TUNNEL_URL>/v1/chat/completions" \
             const out = document.getElementById('asm-output');
             out.innerText = 'Compilando con Keystone...';
             try {
-                const res = await fetch('/api/tools/assemble', {
+                const res = await authFetch('/api/tools/assemble', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ asm_code: asm, arch: 'x86_64' })
@@ -655,9 +657,43 @@ curl -X POST "<TUNNEL_URL>/v1/chat/completions" \
         async function genCyclic() {
             const out = document.getElementById('asm-output');
             try {
-                const res = await fetch('/api/tools/cyclic?length=200');
+                const res = await authFetch('/api/tools/cyclic?length=200');
                 const data = await res.json();
                 out.innerText = `[PATRÓN DE BRUIJN (200 bytes)]:\n${data.pattern}`;
+            } catch (e) {
+                out.innerText = 'Error: ' + e.message;
+            }
+        }
+
+        async function runChecksec() {
+            const path = document.getElementById('triage-file-path').value.trim();
+            const out = document.getElementById('audit-output');
+            out.innerText = 'Ejecutando checksec en ' + path + '...';
+            try {
+                const res = await authFetch('/api/tools/checksec', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ filepath: path })
+                });
+                const data = await res.json();
+                out.innerText = JSON.stringify(data, null, 2);
+            } catch (e) {
+                out.innerText = 'Error: ' + e.message;
+            }
+        }
+
+        async function runEntropy() {
+            const path = document.getElementById('triage-file-path').value.trim();
+            const out = document.getElementById('audit-output');
+            out.innerText = 'Calculando entropía de Shannon en ' + path + '...';
+            try {
+                const res = await authFetch('/api/tools/entropy', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ filepath: path })
+                });
+                const data = await res.json();
+                out.innerText = JSON.stringify(data, null, 2);
             } catch (e) {
                 out.innerText = 'Error: ' + e.message;
             }

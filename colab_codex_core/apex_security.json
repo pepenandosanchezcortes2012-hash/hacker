@@ -1,0 +1,7 @@
+{
+  "admin_username": "apex_admin",
+  "admin_token": "APX-SEC-7F9A2B8E3C1D4E5F60718293A4B5C6D7",
+  "session_cookie_name": "APEX_SESSION_AUTH",
+  "auth_header": "Authorization: Bearer APX-SEC-7F9A2B8E3C1D4E5F60718293A4B5C6D7",
+  "created_at": "2026-10-10 14:00:00"
+}
