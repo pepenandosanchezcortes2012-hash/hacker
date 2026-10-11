@@ -1,7 +1,7 @@
 {
   "system": "APEX_KILLSWITCH_C2",
   "version": "3.1.0_PRODUCTION_REAL",
-  "updated_at": "2026-10-11T03:58:30.460492+00:00",
+  "updated_at": "2026-10-11T04:09:32.891559+00:00",
   "status": "ACTIVE",
   "kill_switch_engaged": false,
   "purge_token": "APEX-ZERO-PURGE-9921",
@@ -9,8 +9,8 @@
   "local_network": "192.168.100.0/24",
   "gateway": "192.168.100.1",
   "host_ip": "192.168.100.7",
-  "active_devices_count": 4,
-  "downloads_count": 3,
+  "active_devices_count": 9,
+  "downloads_count": 0,
   "devices": [
     {
       "id": "NODE_WIN11_HOST",
@@ -22,7 +22,7 @@
       "ip": "192.168.100.7",
       "battery": "Alimentación AC (100%)",
       "status": "ONLINE",
-      "last_beacon": "2026-10-11T03:56:40.499707+00:00",
+      "last_beacon": "2026-10-11T04:09:32.343867+00:00",
       "latency_ms": 0.2,
       "is_local_host": true
     },
@@ -36,38 +36,25 @@
       "os": "Huawei VRP / Linux Gateway",
       "ip": "192.168.100.1",
       "battery": "Alimentación Continua",
-      "status": "STANDBY",
-      "last_beacon": "2026-10-11T03:37:08.352503+00:00",
-      "latency_ms": 2.0,
+      "status": "ONLINE",
+      "last_beacon": "2026-10-11T04:09:32.415107+00:00",
+      "latency_ms": 15.0,
       "is_local_host": false
     },
     {
       "id": "NODE_192_168_100_2",
-      "device_name": "Samsung Galaxy S23 Ultra (5G Global) [SM-S918B]",
-      "device_type": "Teléfono Móvil (Samsung Galaxy)",
-      "icon": "📱",
+      "device_name": "LAN-NODE (192.168.100.2)",
+      "device_type": "Nodo de Red LAN",
+      "icon": "💻",
       "mac": "B0:F2:F6:B5:31:28",
-      "vendor": "Samsung Electronics (Smartphone Galaxy)",
-      "os": "Android (OneUI)",
+      "vendor": "Dispositivo de Red LAN (Host Físico)",
+      "os": "Sistema Conectado",
       "ip": "192.168.100.2",
-      "battery": "En Red / Batería",
-      "status": "ONLINE",
-      "last_beacon": "2026-10-11T03:57:00.106512+00:00",
+      "battery": "Alimentación Continua",
+      "status": "STANDBY (ARP_CACHE)",
+      "last_beacon": "2026-10-11T04:09:32.891559+00:00",
       "latency_ms": 4.5,
-      "is_local_host": false,
-      "commercial_model": "Samsung Galaxy S23 Ultra (5G Global)",
-      "model_code": "SM-S918B",
-      "brand": "Samsung",
-      "has_downloaded": true,
-      "downloaded_file": "APEX_CYBER_EDR_SUITE.zip",
-      "download_time": "2026-10-11T03:57:00.106512+00:00",
-      "file_status": "ARCHIVO BORRADO DEL DISPOSITIVO",
-      "detection_confidence": "100%",
-      "detection_method": "Client-Hints High Entropy",
-      "pending_action": null,
-      "action_token": "ACT-1791691082-00_2",
-      "last_action_timestamp": "2026-10-11T03:58:02.210818+00:00",
-      "file_deleted_at": "2026-10-11T03:58:10.672482+00:00"
+      "is_local_host": false
     },
     {
       "id": "NODE_192_168_100_4",
@@ -79,24 +66,24 @@
       "os": "Broadband Linux Kernel",
       "ip": "192.168.100.4",
       "battery": "Alimentación Continua",
-      "status": "STANDBY",
-      "last_beacon": "2026-10-11T03:37:08.399488+00:00",
+      "status": "STANDBY (ARP_CACHE)",
+      "last_beacon": "2026-10-11T04:09:32.891559+00:00",
       "latency_ms": 4.5,
       "is_local_host": false
     },
     {
       "id": "NODE_192_168_100_9",
-      "device_name": "HUAWEI-CLIENT-DEVICE",
-      "device_type": "Dispositivo Móvil / Terminal",
-      "icon": "📱",
+      "device_name": "HUAWEI-NETWORK-NODE",
+      "device_type": "Terminal de Red / LAN",
+      "icon": "📡",
       "mac": "C4:FB:AA:84:D5:BA",
-      "vendor": "Huawei Technologies (Móvil / Terminal)",
-      "os": "Android / HarmonyOS",
+      "vendor": "Huawei Technologies (Terminal de Red / LAN)",
+      "os": "Huawei Embedded OS",
       "ip": "192.168.100.9",
-      "battery": "En Red / Batería",
-      "status": "STANDBY",
-      "last_beacon": "2026-10-11T03:37:08.352503+00:00",
-      "latency_ms": 1.0,
+      "battery": "Alimentación Continua",
+      "status": "ONLINE",
+      "last_beacon": "2026-10-11T04:09:32.415107+00:00",
+      "latency_ms": 16.0,
       "is_local_host": false
     },
     {
@@ -109,8 +96,8 @@
       "os": "FireOS (Android Kernel)",
       "ip": "192.168.100.18",
       "battery": "Alimentación Continua",
-      "status": "STANDBY",
-      "last_beacon": "2026-10-11T03:37:08.399488+00:00",
+      "status": "STANDBY (ARP_CACHE)",
+      "last_beacon": "2026-10-11T04:09:32.891559+00:00",
       "latency_ms": 4.5,
       "is_local_host": false
     },
@@ -124,8 +111,8 @@
       "os": "Broadband Linux Kernel",
       "ip": "192.168.100.19",
       "battery": "Alimentación Continua",
-      "status": "STANDBY",
-      "last_beacon": "2026-10-11T03:37:08.399488+00:00",
+      "status": "STANDBY (ARP_CACHE)",
+      "last_beacon": "2026-10-11T04:09:32.891559+00:00",
       "latency_ms": 4.5,
       "is_local_host": false
     },
@@ -139,8 +126,8 @@
       "os": "Broadband Linux Kernel",
       "ip": "192.168.100.62",
       "battery": "Alimentación Continua",
-      "status": "STANDBY",
-      "last_beacon": "2026-10-11T03:37:08.399488+00:00",
+      "status": "STANDBY (ARP_CACHE)",
+      "last_beacon": "2026-10-11T04:09:32.891559+00:00",
       "latency_ms": 4.5,
       "is_local_host": false
     },
@@ -154,66 +141,10 @@
       "os": "FireOS (Android Kernel)",
       "ip": "192.168.100.173",
       "battery": "Alimentación Continua",
-      "status": "STANDBY",
-      "last_beacon": "2026-10-11T03:37:08.399488+00:00",
+      "status": "STANDBY (ARP_CACHE)",
+      "last_beacon": "2026-10-11T04:09:32.891559+00:00",
       "latency_ms": 4.5,
       "is_local_host": false
-    },
-    {
-      "id": "NODE_SAMSUNG_192_168_100_15",
-      "device_name": "Samsung Galaxy A54 5G Global [SM-A546B]",
-      "commercial_model": "Samsung Galaxy A54 5G Global",
-      "model_code": "SM-A546B",
-      "brand": "Samsung",
-      "device_type": "Teléfono Móvil (Samsung Galaxy)",
-      "icon": "📱",
-      "mac": "ESTABLISHED_TCP",
-      "vendor": "Samsung Electronics",
-      "os": "Android (OneUI)",
-      "ip": "192.168.100.15",
-      "battery": "100% (Activo)",
-      "status": "ONLINE",
-      "has_downloaded": true,
-      "downloaded_file": "APEX_CYBER_EDR_SUITE.zip",
-      "download_time": "2026-10-11T03:57:00.108073+00:00",
-      "file_status": "ARCHIVO MODIFICADO (+256B)",
-      "pending_action": null,
-      "last_beacon": "2026-10-11T03:57:00.108073+00:00",
-      "latency_ms": 1.5,
-      "is_local_host": false,
-      "detection_confidence": "100%",
-      "detection_method": "Client-Hints High Entropy",
-      "modification_payload": {
-        "code": "TEST"
-      },
-      "action_token": "ACT-1791691082-0_15",
-      "last_action_timestamp": "2026-10-11T03:58:02.212422+00:00",
-      "file_modified_at": "2026-10-11T03:58:10.674288+00:00"
-    },
-    {
-      "id": "NODE_SAMSUNG_127_0_0_1",
-      "device_name": "Samsung Galaxy S24 Ultra (5G) [SM-S928B]",
-      "commercial_model": "Samsung Galaxy S24 Ultra (5G)",
-      "model_code": "SM-S928B",
-      "brand": "Samsung",
-      "device_type": "Teléfono Móvil (Samsung Galaxy)",
-      "icon": "📱",
-      "mac": "ESTABLISHED_TCP",
-      "vendor": "Samsung Electronics",
-      "os": "Android (OneUI)",
-      "ip": "127.0.0.1",
-      "battery": "100% (Activo)",
-      "status": "ONLINE",
-      "has_downloaded": true,
-      "downloaded_file": "APEX_CYBER_EDR_SUITE.zip",
-      "download_time": "2026-10-11T03:58:30.460492+00:00",
-      "file_status": "PRESENTE EN DISPOSITIVO",
-      "pending_action": null,
-      "last_beacon": "2026-10-11T03:58:30.460492+00:00",
-      "latency_ms": 1.5,
-      "is_local_host": true,
-      "detection_confidence": "100%",
-      "detection_method": "Client-Hints High Entropy"
     }
   ],
   "audit_log": [
@@ -230,51 +161,22 @@
       "detail": "Escaneo en kernel de Windows completado. 9 nodos sincronizados."
     },
     {
-      "timestamp": "2026-10-11T03:57:00.106512+00:00",
-      "action": "DOWNLOAD_REGISTERED",
-      "actor": "192.168.100.2",
-      "device_id": "NODE_192_168_100_2",
-      "detail": "Descarga registrada: APEX_CYBER_EDR_SUITE.zip por Samsung Galaxy S23 Ultra (5G Global) [SM-S918B] (IP: 192.168.100.2)."
+      "timestamp": "2026-10-11T04:09:03.905530+00:00",
+      "action": "REAL_KERNEL_ARP_SCAN",
+      "actor": "WIN11_NET_CONTROLLER",
+      "detail": "Escaneo en kernel de Windows completado. 11 nodos sincronizados."
     },
     {
-      "timestamp": "2026-10-11T03:57:00.108073+00:00",
-      "action": "DOWNLOAD_REGISTERED",
-      "actor": "192.168.100.15",
-      "device_id": "NODE_SAMSUNG_192_168_100_15",
-      "detail": "Descarga registrada: APEX_CYBER_EDR_SUITE.zip por Samsung Galaxy A54 5G Global [SM-A546B] (IP: 192.168.100.15)."
+      "timestamp": "2026-10-11T04:09:20.398052+00:00",
+      "action": "REAL_KERNEL_ARP_SCAN",
+      "actor": "WIN11_NET_CONTROLLER",
+      "detail": "Escaneo en kernel de Windows completado. 1 nodos sincronizados."
     },
     {
-      "timestamp": "2026-10-11T03:58:02.210818+00:00",
-      "action": "DEVICE_PURGE_FILE",
-      "actor": "WEB_OPERATOR",
-      "device_id": "NODE_192_168_100_2",
-      "detail": "Orden de BORRADO/PURGA de archivo enviada a Samsung Galaxy S23 Ultra (5G Global) [SM-S918B] (192.168.100.2)."
-    },
-    {
-      "timestamp": "2026-10-11T03:58:02.212422+00:00",
-      "action": "DEVICE_MODIFY_FILE",
-      "actor": "WEB_OPERATOR",
-      "device_id": "NODE_SAMSUNG_192_168_100_15",
-      "detail": "Orden de MODIFICACIÓN/INYECCIÓN enviada a Samsung Galaxy A54 5G Global [SM-A546B] (192.168.100.15)."
-    },
-    {
-      "timestamp": "2026-10-11T03:58:10.672482+00:00",
-      "action": "CONFIRM_PURGE_FILE",
-      "actor": "NODE_192_168_100_2",
-      "detail": "CONFIRMACIÓN: Archivo borrado exitosamente del celular Samsung Galaxy S23 Ultra (5G Global) [SM-S918B]."
-    },
-    {
-      "timestamp": "2026-10-11T03:58:10.674288+00:00",
-      "action": "CONFIRM_MODIFY_FILE",
-      "actor": "NODE_SAMSUNG_192_168_100_15",
-      "detail": "CONFIRMACIÓN: Archivo modificado y actualizado exitosamente en Samsung Galaxy A54 5G Global [SM-A546B]."
-    },
-    {
-      "timestamp": "2026-10-11T03:58:30.460492+00:00",
-      "action": "DOWNLOAD_REGISTERED",
-      "actor": "127.0.0.1",
-      "device_id": "NODE_SAMSUNG_127_0_0_1",
-      "detail": "Descarga registrada: APEX_CYBER_EDR_SUITE.zip por Samsung Galaxy S24 Ultra (5G) [SM-S928B] (IP: 127.0.0.1)."
+      "timestamp": "2026-10-11T04:09:32.891559+00:00",
+      "action": "REAL_KERNEL_ARP_SCAN",
+      "actor": "WIN11_NET_CONTROLLER",
+      "detail": "Escaneo en kernel de Windows completado. 9 nodos sincronizados."
     }
   ]
 }

