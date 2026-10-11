@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KILL-SWITCH C2 CONTROLLER // APEX ADVERSARY PLATFORM</title>
+  <style>
+    :root {
+      --bg-deep: #07090e;
+      --bg-panel: #0d111a;
+      --bg-card: #131a26;
+      --border-color: #1e293b;
+      --text-main: #e2e8f0;
+      --text-muted: #64748b;
+      --neon-green: #00ff66;
+      --neon-amber: #ffb700;
+      --neon-red: #ff1e42;
+      --neon-cyan: #00e5ff;
+      --font-mono: 'Consolas', 'Fira Code', 'Cascadia Code', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-deep);
+      color: var(--text-main);
+      font-family: var(--font-mono);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(0, 255, 102, 0.03) 0%, transparent 20%),
+        radial-gradient(circle at 90% 80%, rgba(255, 30, 66, 0.03) 0%, transparent 20%);
+    }
+
+    /* HEADER */
+    header {
+      background: var(--bg-panel);
+      border-bottom: 1px solid var(--border-color);
+      padding: 16px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .pulse-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--neon-green);
+      box-shadow: 0 0 12px var(--neon-green);
+      animation: pulse-anim 1.8s infinite;
+    }
+
+    .pulse-dot.danger {
+      background: var(--neon-red);
+      box-shadow: 0 0 18px var(--neon-red);
+      animation: pulse-danger 0.6s infinite;
+    }
+
+    .pulse-dot.warning {
+      background: var(--neon-amber);
+      box-shadow: 0 0 12px var(--neon-amber);
+      animation: pulse-anim 1.2s infinite;
+    }
+
+    @keyframes pulse-anim {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    @keyframes pulse-danger {
+      0%, 100% { opacity: 1; transform: scale(1.1); }
+      50% { opacity: 0.2; transform: scale(0.9); }
+    }
+
+    .brand h1 {
+      font-size: 1.15rem;
+      letter-spacing: 2px;
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .brand .badge {
+      font-size: 0.68rem;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: rgba(0, 229, 255, 0.12);
+      color: var(--neon-cyan);
+      border: 1px solid rgba(0, 229, 255, 0.3);
+      letter-spacing: 1px;
+    }
+
+    .system-meta {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .system-meta span strong {
+      color: var(--text-main);
+    }
+
+    /* MAIN CONTAINER */
+    main {
+      flex: 1;
+      padding: 24px;
+      max-width: 1380px;
+      margin: 0 auto;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* MASTER SWITCH HERO */
+    .master-switch-card {
+      background: var(--bg-panel);
+      border: 2px solid var(--border-color);
+      border-radius: 8px;
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+      transition: border-color 0.3s;
+    }
+
+    .master-switch-card.status-active {
+      border-color: rgba(0, 255, 102, 0.4);
+    }
+
+    .master-switch-card.status-paused {
+      border-color: rgba(255, 183, 0, 0.4);
+    }
+
+    .master-switch-card.status-purge {
+      border-color: var(--neon-red);
+      box-shadow: 0 0 30px rgba(255, 30, 66, 0.35);
+      background: linear-gradient(180deg, #160a0d 0%, var(--bg-panel) 100%);
+    }
+
+    .hero-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .hero-header h2 {
+      font-size: 1.3rem;
+      letter-spacing: 1.5px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .status-pill {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .pill-active {
+      background: rgba(0, 255, 102, 0.15);
+      color: var(--neon-green);
+      border: 1px solid var(--neon-green);
+    }
+
+    .pill-paused {
+      background: rgba(255, 183, 0, 0.15);
+      color: var(--neon-amber);
+      border: 1px solid var(--neon-amber);
+    }
+
+    .pill-purge {
+      background: rgba(255, 30, 66, 0.25);
+      color: var(--neon-red);
+      border: 2px solid var(--neon-red);
+      animation: pulse-danger 0.8s infinite;
+    }
+
+    /* SWITCH CONTROLS */
+    .controls-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+      margin-top: 10px;
+    }
+
+    .btn-action {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 20px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: flex-start;
+      transition: all 0.2s ease;
+      font-family: var(--font-mono);
+      position: relative;
+    }
+
+    .btn-action:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+    }
+
+    .btn-action .btn-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-action .btn-desc {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+      text-align: left;
+    }
+
+    /* ACTION TYPES */
+    .btn-activate {
+      border-color: rgba(0, 255, 102, 0.3);
+    }
+    .btn-activate:hover, .btn-activate.active-state {
+      background: rgba(0, 255, 102, 0.12);
+      border-color: var(--neon-green);
+      color: #fff;
+    }
+    .btn-activate .btn-title { color: var(--neon-green); }
+
+    .btn-pause {
+      border-color: rgba(255, 183, 0, 0.3);
+    }
+    .btn-pause:hover, .btn-pause.active-state {
+      background: rgba(255, 183, 0, 0.12);
+      border-color: var(--neon-amber);
+      color: #fff;
+    }
+    .btn-pause .btn-title { color: var(--neon-amber); }
+
+    .btn-destroy {
+      border: 2px solid rgba(255, 30, 66, 0.5);
+      background: rgba(255, 30, 66, 0.08);
+    }
+    .btn-destroy:hover, .btn-destroy.active-state {
+      background: rgba(255, 30, 66, 0.25);
+      border-color: var(--neon-red);
+      box-shadow: 0 0 25px rgba(255, 30, 66, 0.4);
+      color: #fff;
+    }
+    .btn-destroy .btn-title { color: var(--neon-red); }
+
+    /* GRID COLUMNS */
+    .dashboard-columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 960px) {
+      .dashboard-columns {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* PANEL BASE */
+    .panel {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 12px;
+    }
+
+    .panel-title {
+      font-size: 0.95rem;
+      letter-spacing: 1.5px;
+      color: var(--neon-cyan);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* NODES LIST */
+    .node-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 14px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s;
+    }
+
+    .node-card.purged {
+      opacity: 0.35;
+      filter: grayscale(1);
+      border-color: var(--neon-red);
+      text-decoration: line-through;
+    }
+
+    .node-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .node-name {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .node-sub {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .node-status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.8rem;
+    }
+
+    .badge-online {
+      color: var(--neon-green);
+      background: rgba(0, 255, 102, 0.1);
+      padding: 3px 8px;
+      border-radius: 4px;
+      border: 1px solid rgba(0, 255, 102, 0.2);
+    }
+
+    .badge-killed {
+      color: var(--neon-red);
+      background: rgba(255, 30, 66, 0.15);
+      padding: 3px 8px;
+      border-radius: 4px;
+      border: 1px solid rgba(255, 30, 66, 0.3);
+    }
+
+    /* DOWNLOAD HUB */
+    .download-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .download-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .download-item .info h4 {
+      font-size: 0.88rem;
+      color: #fff;
+      margin-bottom: 2px;
+    }
+
+    .download-item .info p {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+    }
+
+    .btn-download {
+      background: rgba(0, 229, 255, 0.1);
+      border: 1px solid var(--neon-cyan);
+      color: var(--neon-cyan);
+      padding: 8px 14px;
+      border-radius: 4px;
+      font-size: 0.78rem;
+      font-family: var(--font-mono);
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-download:hover {
+      background: var(--neon-cyan);
+      color: #000;
+      box-shadow: 0 0 14px rgba(0, 229, 255, 0.4);
+    }
+
+    .btn-download-primary {
+      background: rgba(0, 255, 102, 0.15);
+      border-color: var(--neon-green);
+      color: var(--neon-green);
+      font-weight: 700;
+    }
+
+    .btn-download-primary:hover {
+      background: var(--neon-green);
+      color: #000;
+      box-shadow: 0 0 16px rgba(0, 255, 102, 0.5);
+    }
+
+    /* TERMINAL CONSOLE */
+    .console-box {
+      background: #05070a;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 16px;
+      font-size: 0.76rem;
+      height: 230px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      color: #38bdf8;
+      box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.7);
+    }
+
+    .log-line {
+      line-height: 1.4;
+      word-break: break-all;
+    }
+
+    .log-line.error { color: var(--neon-red); }
+    .log-line.success { color: var(--neon-green); }
+    .log-line.warn { color: var(--neon-amber); }
+
+    /* FOOTER */
+    footer {
+      background: var(--bg-panel);
+      border-top: 1px solid var(--border-color);
+      padding: 14px 28px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    footer a {
+      color: var(--neon-cyan);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="brand">
+      <div class="pulse-dot" id="statusPulse"></div>
+      <div>
+        <h1>KILL-SWITCH C2 CONTROLLER</h1>
+        <div style="display: flex; gap: 8px; align-items: center; margin-top: 2px;">
+          <span class="badge">APEX ADVERSARY SIMULATOR</span>
+          <span style="font-size: 0.7rem; color: var(--text-muted);">HOST: GITHUB PAGES // LINUX & WIN32</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="system-meta">
+      <span>ZONA: <strong>AMERICA/MEXICO_CITY</strong></span>
+      <span>RELOJ UTC: <strong id="clockUtc">--:--:--</strong></span>
+      <span>REPO: <a href="https://github.com/pepenandosanchezcortes2012-hash/hacker" target="_blank" style="color:var(--neon-cyan); text-decoration:none;"><strong>hacker/main</strong></a></span>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main>
+
+    <!-- MASTER SWITCH HERO -->
+    <section class="master-switch-card status-active" id="masterHeroCard">
+      <div class="hero-header">
+        <div>
+          <h2>
+            <span>⚡</span> INTERRUPTOR MAESTRO DE AGENTES Y PAYLOADS
+          </h2>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">
+            Control de señalización central: emite estados en tiempo real para todos los agentes de prueba y telemetría activos.
+          </p>
+        </div>
+        <div class="status-pill pill-active" id="heroStatusPill">
+          SISTEMA ACTIVO (MONITOR)
+        </div>
+      </div>
+
+      <!-- CONTROLS -->
+      <div class="controls-grid">
+        <!-- 1. ACTIVAR -->
+        <button class="btn-action btn-activate active-state" id="btnActivate" onclick="setControllerState('ACTIVE')">
+          <div class="btn-title">
+            <span>🟢</span> 1. ACTIVAR / REANUDAR
+          </div>
+          <div class="btn-desc">
+            Emite orden de beaconing continuo. Los agentes transmiten telemetría y pruebas de latencia normalmente.
+          </div>
+        </button>
+
+        <!-- 2. PAUSAR -->
+        <button class="btn-action btn-pause" id="btnPause" onclick="setControllerState('PAUSED')">
+          <div class="btn-title">
+            <span>🟡</span> 2. PAUSAR / DESARMAR
+          </div>
+          <div class="btn-desc">
+            Pone a los agentes en modo Standby / Dormición segura. Suspende sondeos sin destruir binarios ni logs.
+          </div>
+        </button>
+
+        <!-- 3. DESTRUIR / PURGA TOTAL -->
+        <button class="btn-action btn-destroy" id="btnDestroy" onclick="triggerMasterKillSwitch()">
+          <div class="btn-title">
+            <span>🔴</span> 3. AUTO-DESTRUCCIÓN TOTAL (KILL-SWITCH)
+          </div>
+          <div class="btn-desc">
+            EMERGENCIA: Transmite token de purga atómica. Todos los agentes borran su memoria, destruyen sus artefactos y terminan su ejecución.
+          </div>
+        </button>
+      </div>
+    </section>
+
+    <!-- TWO COLUMN LAYOUT -->
+    <div class="dashboard-columns">
+      
+      <!-- LEFT: AGENTES CONECTADOS (RADAR) -->
+      <section class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span>📡</span> NODOS Y PAYLOADS BAJO SUPERVISIÓN
+          </div>
+          <span style="font-size: 0.72rem; color: var(--text-muted);" id="nodesCountLabel">3 NODOS VINCULADOS</span>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 10px;" id="nodesListContainer">
+          <!-- NODE 1 -->
+          <div class="node-card" id="nodeCardWin">
+            <div class="node-info">
+              <span class="node-name">NODE_WIN11_HOST</span>
+              <span class="node-sub">Windows 11 Pro // PID Vigilado // IP: 192.168.100.7</span>
+            </div>
+            <div class="node-status">
+              <span class="badge-online" id="statusBadgeWin">ONLINE (0.4ms)</span>
+              <button onclick="purgeSingleNode('nodeCardWin', 'NODE_WIN11_HOST')" style="background:none; border:none; color:var(--neon-red); cursor:pointer; font-size:0.75rem;" title="Desconectar este nodo">✕</button>
+            </div>
+          </div>
+
+          <!-- NODE 2 -->
+          <div class="node-card" id="nodeCardMobile">
+            <div class="node-info">
+              <span class="node-name">NODE_MOBILE_ANDROID</span>
+              <span class="node-sub">Android 14 ARM64 // Synthetic Daemon // IP: 192.168.100.24</span>
+            </div>
+            <div class="node-status">
+              <span class="badge-online" id="statusBadgeMobile">ONLINE (12.8ms)</span>
+              <button onclick="purgeSingleNode('nodeCardMobile', 'NODE_MOBILE_ANDROID')" style="background:none; border:none; color:var(--neon-red); cursor:pointer; font-size:0.75rem;" title="Desconectar este nodo">✕</button>
+            </div>
+          </div>
+
+          <!-- NODE 3 -->
+          <div class="node-card" id="nodeCardColab">
+            <div class="node-info">
+              <span class="node-name">NODE_COLAB_GPU</span>
+              <span class="node-sub">Ubuntu 22.04 LTS // Tesla T4 GPU // IP: 34.125.88.19</span>
+            </div>
+            <div class="node-status">
+              <span class="badge-online" id="statusBadgeColab">ONLINE (28.5ms)</span>
+              <button onclick="purgeSingleNode('nodeCardColab', 'NODE_COLAB_GPU')" style="background:none; border:none; color:var(--neon-red); cursor:pointer; font-size:0.75rem;" title="Desconectar este nodo">✕</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px; font-size:0.74rem; color:var(--text-muted);">
+          <span>TOKEN DE PURGA: <strong style="color:var(--neon-cyan);">APEX-ZERO-PURGE-9921</strong></span>
+          <button onclick="copyKillSwitchApiUrl()" style="background:rgba(0,229,255,0.08); border:1px solid var(--neon-cyan); color:var(--neon-cyan); padding:4px 8px; border-radius:4px; font-family:var(--font-mono); cursor:pointer;">COPIAR URL DEL ESTADO</button>
+        </div>
+      </section>
+
+      <!-- RIGHT: CENTRO DE DESCARGAS DE AGENTES -->
+      <section class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span>📦</span> ARTEFACTOS Y AGENTES DESCARGABLES
+          </div>
+          <span style="font-size: 0.72rem; color: var(--neon-green);">VERSIÓN 2.4.0 VERIFICADA</span>
+        </div>
+
+        <div class="download-list">
+          
+          <!-- BUNDLE PRINCIPAL ZIP -->
+          <div class="download-item" style="border: 1px solid rgba(0, 255, 102, 0.4); background: rgba(0, 255, 102, 0.03);">
+            <div class="info">
+              <h4>CYBER_KILLSWITCH_TEST_BUNDLE.zip</h4>
+              <p>Paquete completo descargable: scripts Windows (Win32), PowerShell y Android con watchdog.</p>
+            </div>
+            <a href="CYBER_KILLSWITCH_TEST_BUNDLE.zip" download class="btn-download btn-download-primary">
+              ⬇ DESCARGAR ZIP
+            </a>
+          </div>
+
+          <!-- AGENTE PYTHON STANDALONE -->
+          <div class="download-item">
+            <div class="info">
+              <h4>synthetic_agent.py</h4>
+              <p>Agente autónomo en Python. Conecta al interruptor y auto-elimina sus trazas al recibir PURGE.</p>
+            </div>
+            <a href="synthetic_agent.py" download class="btn-download">
+              ⬇ PYTHON (.PY)
+            </a>
+          </div>
+
+          <!-- AGENTE POWERSHELL -->
+          <div class="download-item">
+            <div class="info">
+              <h4>agent_killswitch.ps1</h4>
+              <p>Script nativo Win32 en PowerShell para ejecución directa sin dependencias adicionales.</p>
+            </div>
+            <a href="agent_killswitch.ps1" download class="btn-download">
+              ⬇ POWERSHELL (.PS1)
+            </a>
+          </div>
+
+          <!-- AGENTE MÓVIL SIMULADO -->
+          <div class="download-item">
+            <div class="info">
+              <h4>mobile_synthetic_agent.py</h4>
+              <p>Daemon de emulación móvil (ADB, broadcast intents, sandbox y remoción de permisos).</p>
+            </div>
+            <a href="mobile_synthetic_agent.py" download class="btn-download">
+              ⬇ MÓVIL (.PY)
+            </a>
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+
+    <!-- CONSOLA FORENSE EN TIEMPO REAL -->
+    <section class="panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          <span>💻</span> TELEMETRÍA FORENSE Y TRAZA DE COMANDOS C2
+        </div>
+        <div style="display:flex; gap:10px;">
+          <button onclick="clearConsole()" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-family:var(--font-mono); font-size:0.75rem;">LIMPIAR</button>
+          <button onclick="exportConsoleAudit()" style="background:none; border:none; color:var(--neon-cyan); cursor:pointer; font-family:var(--font-mono); font-size:0.75rem;">EXPORTAR LOG</button>
+        </div>
+      </div>
+
+      <div class="console-box" id="consoleBox">
+        <div class="log-line success">[21:15:00 UTC] APEX Kill-Switch C2 Controller inicializado en GitHub Pages.</div>
+        <div class="log-line">[21:15:01 UTC] Cargando estado inicial desde killswitch_state.json... Estado actual: ACTIVE.</div>
+        <div class="log-line success">[21:15:02 UTC] 3 nodos sincronizados y transmitiendo balizas con latencia sub-milisegundo.</div>
+        <div class="log-line">[21:15:03 UTC] Watchdog de auto-destrucción armado y escuchando en el canal de señalización.</div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div>
+      MOTOR: <strong>APEX AUTONOMOUS DEFENSIVE ENGINE</strong> // MODELO OPERATIVO DETERMINISTA
+    </div>
+    <div>
+      GITHUB: <a href="https://github.com/pepenandosanchezcortes2012-hash/hacker" target="_blank">github.com/pepenandosanchezcortes2012-hash/hacker</a>
+    </div>
+  </footer>
+
+  <script>
+    // ESTADO LOCAL DEL CONTROLADOR
+    let controllerState = 'ACTIVE';
+    let audioCtx = null;
+
+    // RELOJ
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('clockUtc').textContent = now.toISOString().substring(11, 19);
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // SINTETIZADOR DE AUDIO WEB PARA EFECTOS TÁCTICOS
+    function playBeep(freq, duration, type='sine') {
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {
+        // Audio deshabilitado por el navegador
+      }
+    }
+
+    function logToConsole(msg, type='') {
+      const box = document.getElementById('consoleBox');
+      const timeStr = new Date().toISOString().substring(11, 19);
+      const line = document.createElement('div');
+      line.className = 'log-line ' + type;
+      line.textContent = `[${timeStr} UTC] ${msg}`;
+      box.appendChild(line);
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function clearConsole() {
+      document.getElementById('consoleBox').innerHTML = '';
+      logToConsole('Consola forense reinicializada.', 'success');
+    }
+
+    function exportConsoleAudit() {
+      const lines = Array.from(document.querySelectorAll('#consoleBox .log-line')).map(l => l.textContent).join('\n');
+      const blob = new Blob([lines], { type: 'text/plain' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `killswitch_audit_${Date.now()}.log`;
+      a.click();
+    }
+
+    // CAMBIO DE ESTADO
+    function setControllerState(state) {
+      controllerState = state;
+      const heroCard = document.getElementById('masterHeroCard');
+      const pill = document.getElementById('heroStatusPill');
+      const pulse = document.getElementById('statusPulse');
+      const btnAct = document.getElementById('btnActivate');
+      const btnPau = document.getElementById('btnPause');
+      const btnDes = document.getElementById('btnDestroy');
+
+      btnAct.classList.remove('active-state');
+      btnPau.classList.remove('active-state');
+      btnDes.classList.remove('active-state');
+
+      heroCard.className = 'master-switch-card';
+      pulse.className = 'pulse-dot';
+
+      if (state === 'ACTIVE') {
+        heroCard.classList.add('status-active');
+        pill.className = 'status-pill pill-active';
+        pill.textContent = 'SISTEMA ACTIVO (MONITOR)';
+        btnAct.classList.add('active-state');
+        playBeep(880, 0.15);
+        logToConsole('ESTADO MODIFICADO: ACTIVE. Todos los agentes reanudan telemetría.', 'success');
+        
+        // Restaurar nodos visuales
+        document.querySelectorAll('.node-card').forEach(c => {
+          c.classList.remove('purged');
+        });
+        document.getElementById('statusBadgeWin').className = 'badge-online';
+        document.getElementById('statusBadgeWin').textContent = 'ONLINE (0.4ms)';
+        document.getElementById('statusBadgeMobile').className = 'badge-online';
+        document.getElementById('statusBadgeMobile').textContent = 'ONLINE (12.8ms)';
+        document.getElementById('statusBadgeColab').className = 'badge-online';
+        document.getElementById('statusBadgeColab').textContent = 'ONLINE (28.5ms)';
+
+      } else if (state === 'PAUSED') {
+        heroCard.classList.add('status-paused');
+        pulse.classList.add('warning');
+        pill.className = 'status-pill pill-paused';
+        pill.textContent = 'STANDBY / PAUSADO';
+        btnPau.classList.add('active-state');
+        playBeep(440, 0.25);
+        logToConsole('ESTADO MODIFICADO: PAUSED. Agentes colocados en modo dormición segura.', 'warn');
+        
+        document.getElementById('statusBadgeWin').textContent = 'PAUSED (STANDBY)';
+        document.getElementById('statusBadgeMobile').textContent = 'PAUSED (STANDBY)';
+        document.getElementById('statusBadgeColab').textContent = 'PAUSED (STANDBY)';
+      }
+    }
+
+    // DISPARO DEL INTERRUPTOR MAESTRO (KILL-SWITCH TOTAL)
+    function triggerMasterKillSwitch() {
+      const confirmKill = confirm('⚠️ ¿CONFIRMAR AUTO-DESTRUCCIÓN TOTAL?\n\nEsta acción enviará la señal PURGE a todos los agentes activos, destruirá sus archivos temporales en memoria y terminará su ejecución.');
+      if (!confirmKill) return;
+
+      controllerState = 'PURGE';
+      const heroCard = document.getElementById('masterHeroCard');
+      const pill = document.getElementById('heroStatusPill');
+      const pulse = document.getElementById('statusPulse');
+      const btnDes = document.getElementById('btnDestroy');
+      const btnAct = document.getElementById('btnActivate');
+      const btnPau = document.getElementById('btnPause');
+
+      btnAct.classList.remove('active-state');
+      btnPau.classList.remove('active-state');
+      btnDes.classList.add('active-state');
+
+      heroCard.className = 'master-switch-card status-purge';
+      pulse.className = 'pulse-dot danger';
+      pill.className = 'status-pill pill-purge';
+      pill.textContent = '🔥 KILL-SWITCH EJECUTADO (PURGA TOTAL)';
+
+      // Secuencia de sonido de alarma
+      playBeep(220, 0.2, 'sawtooth');
+      setTimeout(() => playBeep(180, 0.3, 'sawtooth'), 220);
+      setTimeout(() => playBeep(140, 0.4, 'sawtooth'), 550);
+
+      logToConsole('🚨 [EMERGENCY KILL-SWITCH] Transmitiendo orden atómica APEX-ZERO-PURGE-9921...', 'error');
+      
+      setTimeout(() => {
+        logToConsole('[NODE_WIN11_HOST] Señal recibida. Sobrescribiendo memoria y limpiando proceso.', 'error');
+        document.getElementById('nodeCardWin').classList.add('purged');
+        document.getElementById('statusBadgeWin').className = 'badge-killed';
+        document.getElementById('statusBadgeWin').textContent = 'PURGED / DEAD';
+      }, 300);
+
+      setTimeout(() => {
+        logToConsole('[NODE_MOBILE_ANDROID] Paquete autodestruido. Desinstalación simulada en sandbox.', 'error');
+        document.getElementById('nodeCardMobile').classList.add('purged');
+        document.getElementById('statusBadgeMobile').className = 'badge-killed';
+        document.getElementById('statusBadgeMobile').textContent = 'PURGED / DEAD';
+      }, 700);
+
+      setTimeout(() => {
+        logToConsole('[NODE_COLAB_GPU] Kernel Tesla T4 terminado. Memoria de video liberada.', 'error');
+        document.getElementById('nodeCardColab').classList.add('purged');
+        document.getElementById('statusBadgeColab').className = 'badge-killed';
+        document.getElementById('statusBadgeColab').textContent = 'PURGED / DEAD';
+        logToConsole('🛡️ AUTO-DESTRUCCIÓN COMPLETADA: Todos los agentes han sido neutralizados con éxito.', 'success');
+      }, 1100);
+    }
+
+    function purgeSingleNode(cardId, nodeName) {
+      playBeep(300, 0.15, 'triangle');
+      document.getElementById(cardId).classList.add('purged');
+      logToConsole(`[SEPARACIÓN INDIVIDUAL] Nodo ${nodeName} desconectado y purgado del enjambre.`, 'warn');
+    }
+
+    function copyKillSwitchApiUrl() {
+      const url = window.location.origin + window.location.pathname.replace('index.html', '') + 'killswitch_state.json';
+      navigator.clipboard.writeText(url).then(() => {
+        alert('URL del estado copiada al portapapeles:\n' + url);
+      }).catch(() => {
+        prompt('Copia manualmente la URL:', url);
+      });
+    }
+  </script>
+</body>
+</html>

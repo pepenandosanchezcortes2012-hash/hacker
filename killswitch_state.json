@@ -1,0 +1,44 @@
+{
+  "system": "APEX_KILLSWITCH_C2",
+  "version": "2.4.0",
+  "updated_at": "2026-10-10T21:15:00Z",
+  "status": "ACTIVE",
+  "kill_switch_engaged": false,
+  "purge_token": "APEX-ZERO-PURGE-9921",
+  "command": "MONITOR",
+  "active_nodes_count": 3,
+  "nodes": [
+    {
+      "id": "NODE_WIN11_HOST",
+      "os": "Windows 11 Pro (Win32)",
+      "ip": "192.168.100.7",
+      "status": "ONLINE",
+      "last_beacon": "2026-10-10T21:14:52Z",
+      "latency_ms": 0.4
+    },
+    {
+      "id": "NODE_MOBILE_ANDROID",
+      "os": "Android 14 ARM64",
+      "ip": "192.168.100.24",
+      "status": "ONLINE",
+      "last_beacon": "2026-10-10T21:14:48Z",
+      "latency_ms": 12.8
+    },
+    {
+      "id": "NODE_COLAB_GPU",
+      "os": "Ubuntu 22.04 LTS / Tesla T4",
+      "ip": "34.125.88.19",
+      "status": "ONLINE",
+      "last_beacon": "2026-10-10T21:14:55Z",
+      "latency_ms": 28.5
+    }
+  ],
+  "audit_log": [
+    {
+      "timestamp": "2026-10-10T21:15:00Z",
+      "action": "SYSTEM_START",
+      "actor": "ADMIN_OPERATOR",
+      "detail": "Interruptor C2 y matriz de supervisión inicializada en GitHub."
+    }
+  ]
+}
