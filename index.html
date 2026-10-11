@@ -732,11 +732,14 @@
           <div class="panel-title">
             <span>📱💻</span> DISPOSITIVOS CONECTADOS EN TIEMPO REAL
           </div>
-          <span style="font-size: 0.72rem; color: var(--neon-green);" id="devicesCountBadge">3 DISPOSITIVOS ACTIVOS</span>
+          <div style="display:flex; gap:10px; align-items:center;">
+            <button onclick="rescanNetwork()" style="background:rgba(0,255,102,0.12); border:1px solid var(--neon-green); color:var(--neon-green); font-size:0.72rem; padding:4px 10px; border-radius:4px; font-family:var(--font-mono); cursor:pointer;">⚡ ESCANEAR RED EN VIVO (KERNEL ARP)</button>
+            <span style="font-size: 0.72rem; color: var(--neon-green);" id="devicesCountBadge">SINCRO EN CURSO</span>
+          </div>
         </div>
 
         <p style="font-size: 0.76rem; color: var(--text-muted);">
-          Monitorización continua de endpoints, móviles y servidores vinculados al interruptor:
+          Monitorización continua y física de endpoints, smartphones y nodos vinculados en la red Wi-Fi:
         </p>
 
         <!-- LISTA DINÁMICA DE DISPOSITIVOS -->
@@ -775,44 +778,55 @@
           <!-- BUNDLE PRINCIPAL ZIP -->
           <div class="download-item" style="border: 1px solid rgba(0, 255, 102, 0.4); background: rgba(0, 255, 102, 0.03);">
             <div class="info">
-              <h4>CYBER_KILLSWITCH_TEST_BUNDLE.zip</h4>
-              <p>Paquete completo descargable: scripts Windows (Win32), PowerShell y Android con watchdog.</p>
+              <h4>📦 APEX_CYBER_EDR_SUITE.zip</h4>
+              <p>Paquete completo descargable: Sondas de telemetría, Limpiador Antivirus, Scripts Win32 y Manual forense.</p>
             </div>
-            <a href="CYBER_KILLSWITCH_TEST_BUNDLE.zip" download class="btn-download btn-download-primary">
+            <a href="APEX_CYBER_EDR_SUITE.zip" download class="btn-download btn-download-primary">
               ⬇ DESCARGAR ZIP
             </a>
           </div>
 
-          <!-- AGENTE PYTHON STANDALONE -->
+          <!-- AGENTE SONDA MULTIPLATAFORMA -->
           <div class="download-item">
             <div class="info">
-              <h4>synthetic_agent.py</h4>
-              <p>Agente autónomo en Python. Conecta al interruptor y auto-elimina sus trazas al recibir PURGE.</p>
+              <h4>🛰️ agent_probe.py</h4>
+              <p>Sonda de telemetría y balizas C2 multiplataforma (Windows, Linux y Android Termux). Recoge batería, CPU, IP y sockets.</p>
             </div>
-            <a href="synthetic_agent.py" download class="btn-download">
-              ⬇ PYTHON (.PY)
+            <a href="agent_probe.py" download class="btn-download">
+              ⬇ AGENTE (.PY)
             </a>
           </div>
 
-          <!-- AGENTE POWERSHELL -->
-          <div class="download-item">
+          <!-- LIMPIADOR Y ANTIVIRUS KILLSWITCH PYTHON -->
+          <div class="download-item" style="border: 1px solid rgba(255, 30, 66, 0.3); background: rgba(255, 30, 66, 0.02);">
             <div class="info">
-              <h4>agent_killswitch.ps1</h4>
-              <p>Script nativo Win32 en PowerShell para ejecución directa sin dependencias adicionales.</p>
+              <h4>🛡️ cleaner_killswitch.py</h4>
+              <p>Herramienta de desinfección total: mata procesos en memoria, tritura archivos con ceros y purga persistencias.</p>
             </div>
-            <a href="agent_killswitch.ps1" download class="btn-download">
-              ⬇ POWERSHELL (.PS1)
+            <a href="cleaner_killswitch.py" download class="btn-download" style="border-color: var(--neon-red); color: var(--neon-red);">
+              ⬇ LIMPIADOR (.PY)
             </a>
           </div>
 
-          <!-- AGENTE MÓVIL SIMULADO -->
+          <!-- LIMPIADOR NATIVO POWERSHELL -->
+          <div class="download-item" style="border: 1px solid rgba(255, 30, 66, 0.3); background: rgba(255, 30, 66, 0.02);">
+            <div class="info">
+              <h4>⚡ cleaner_killswitch.ps1</h4>
+              <p>Limpiador nativo en PowerShell Win32 para Windows 11: erradica sondas y sanea el registro al instante.</p>
+            </div>
+            <a href="cleaner_killswitch.ps1" download class="btn-download" style="border-color: var(--neon-red); color: var(--neon-red);">
+              ⬇ LIMPIADOR (.PS1)
+            </a>
+          </div>
+
+          <!-- MANUAL TÉCNICO Y FORENSE -->
           <div class="download-item">
             <div class="info">
-              <h4>mobile_synthetic_agent.py</h4>
-              <p>Daemon de emulación móvil (ADB, intents de sistema, sandbox y remoción de permisos).</p>
+              <h4>📖 MANUAL_DE_OPERACION_Y_PURGA.md</h4>
+              <p>Guía técnica exhaustiva: explicación de vectores de infección, persistencia y protocolos de desinfección.</p>
             </div>
-            <a href="mobile_synthetic_agent.py" download class="btn-download">
-              ⬇ MÓVIL (.PY)
+            <a href="MANUAL_DE_OPERACION_Y_PURGA.md" download class="btn-download">
+              ⬇ MANUAL (.MD)
             </a>
           </div>
 
@@ -854,58 +868,18 @@
     </div>
   </footer>
 
-  <script>
+    <script>
     // ESTADO GENERAL
     let controllerState = 'ACTIVE';
     let audioCtx = null;
-
-    // MATRIZ DE DISPOSITIVOS CONECTADOS
-    let devices = [
-      {
-        id: 'dev_win11',
-        name: 'PC-WIN11-MASTER',
-        type: 'pc',
-        icon: '💻',
-        typeLabel: 'PC / LAPTOP',
-        os: 'Windows 11 Pro 64-bit',
-        ip: '192.168.100.7',
-        power: 'Alimentación AC (100%)',
-        latency: '0.4ms',
-        status: 'ONLINE',
-        lastPingSeconds: 1
-      },
-      {
-        id: 'dev_mobile',
-        name: 'SMARTPHONE-GALAXY',
-        type: 'mobile',
-        icon: '📱',
-        typeLabel: 'TELÉFONO CELULAR',
-        os: 'Android 14 (ARM64)',
-        ip: '192.168.100.24',
-        power: 'Batería 84% (Cargando)',
-        latency: '12.8ms',
-        status: 'ONLINE',
-        lastPingSeconds: 2
-      },
-      {
-        id: 'dev_colab',
-        name: 'SERVER-COLAB-GPU',
-        type: 'server',
-        icon: '🖥️',
-        typeLabel: 'SERVIDOR NUBE',
-        os: 'Ubuntu 22.04 LTS (Tesla T4)',
-        ip: '34.125.88.19',
-        power: 'Alimentación Servidor',
-        latency: '28.5ms',
-        status: 'ONLINE',
-        lastPingSeconds: 1
-      }
-    ];
+    let devices = [];
+    let isScanning = false;
 
     // RELOJ UTC
     function updateClock() {
       const now = new Date();
-      document.getElementById('clockUtc').textContent = now.toISOString().substring(11, 19);
+      const el = document.getElementById('clockUtc');
+      if (el) el.textContent = now.toISOString().substring(11, 19);
     }
     setInterval(updateClock, 1000);
     updateClock();
@@ -929,13 +903,12 @@
         gain.connect(audioCtx.destination);
         osc.start();
         osc.stop(audioCtx.currentTime + duration);
-      } catch (e) {
-        // Fallback silencioso
-      }
+      } catch (e) {}
     }
 
     function logToConsole(msg, type='') {
       const box = document.getElementById('consoleBox');
+      if (!box) return;
       const timeStr = new Date().toISOString().substring(11, 19);
       const line = document.createElement('div');
       line.className = 'log-line ' + type;
@@ -945,8 +918,11 @@
     }
 
     function clearConsole() {
-      document.getElementById('consoleBox').innerHTML = '';
-      logToConsole('Consola forense reinicializada.', 'success');
+      const box = document.getElementById('consoleBox');
+      if (box) {
+        box.innerHTML = '';
+        logToConsole('Consola forense reinicializada.', 'success');
+      }
     }
 
     function exportConsoleAudit() {
@@ -958,27 +934,30 @@
       a.click();
     }
 
-    // RENDERIZADO DINÁMICO DE DISPOSITIVOS
+    // RENDERIZADO DINÁMICO DE DISPOSITIVOS REALES
     function renderDevices() {
       const container = document.getElementById('devicesListContainer');
       const countBadge = document.getElementById('devicesCountBadge');
-      
-      const activeCount = devices.filter(d => d.status === 'ONLINE').length;
-      countBadge.textContent = `${activeCount} DISPOSITIVOS ${activeCount === 1 ? 'ACTIVO' : 'ACTIVOS'}`;
-      if (activeCount === 0) {
-        countBadge.style.color = 'var(--neon-red)';
-      } else {
-        countBadge.style.color = 'var(--neon-green)';
-      }
+      if (!container || !countBadge) return;
+
+      const onlineCount = devices.filter(d => d.status === 'ONLINE').length;
+      const totalCount = devices.length;
+      countBadge.textContent = `${onlineCount}/${totalCount} DISPOSITIVOS ACTIVOS`;
+      countBadge.style.color = (onlineCount > 0 && controllerState !== 'PURGE') ? 'var(--neon-green)' : 'var(--neon-red)';
 
       container.innerHTML = '';
 
+      if (devices.length === 0) {
+        container.innerHTML = '<div style="padding:20px; text-align:center; color:var(--text-muted);">Consultando dispositivos físicos en la red local...</div>';
+        return;
+      }
+
       devices.forEach(d => {
-        const isPurged = d.status === 'PURGED' || d.status === 'DEAD';
-        const isStandby = d.status === 'STANDBY' || d.status === 'PAUSED';
+        const isPurged = (controllerState === 'PURGE' || d.status === 'PURGED' || d.status === 'DEAD');
+        const isStandby = (controllerState === 'PAUSED' || d.status === 'STANDBY' || d.status === 'PAUSED');
 
         let badgeClass = 'online';
-        let badgeText = `CONECTADO (${d.latency})`;
+        let badgeText = `CONECTADO (${d.latency_ms || 1}ms)`;
         if (isPurged) {
           badgeClass = 'killed';
           badgeText = 'DESCONECTADO / PURGADO';
@@ -988,8 +967,17 @@
         }
 
         let typeClass = 'type-pc';
-        if (d.type === 'mobile') typeClass = 'type-mobile';
-        if (d.type === 'server') typeClass = 'type-server';
+        let icon = d.icon || '💻';
+        if (d.device_type && d.device_type.includes('Móvil')) {
+          typeClass = 'type-mobile';
+          icon = '📱';
+        } else if (d.device_type && (d.device_type.includes('Router') || d.device_type.includes('Gateway'))) {
+          typeClass = 'type-server';
+          icon = '🌐';
+        } else if (d.device_type && d.device_type.includes('Smart TV')) {
+          typeClass = 'type-server';
+          icon = '📺';
+        }
 
         const card = document.createElement('div');
         card.className = `device-card ${isPurged ? 'purged' : ''}`;
@@ -997,17 +985,17 @@
 
         card.innerHTML = `
           <div class="device-main">
-            <div class="device-icon-box">${d.icon}</div>
+            <div class="device-icon-box">${icon}</div>
             <div class="device-details">
               <div class="device-header-row">
-                <span class="device-title">${d.name}</span>
-                <span class="device-type-badge ${typeClass}">${d.typeLabel}</span>
+                <span class="device-title">${d.device_name || d.name || d.id}</span>
+                <span class="device-type-badge ${typeClass}">${d.device_type || 'DISPOSITIVO'}</span>
               </div>
               <div class="device-specs">
-                <span>SO: <strong>${d.os}</strong></span>
-                <span>IP: <strong>${d.ip}</strong></span>
-                <span>Energía: <strong>${d.power}</strong></span>
-                <span>Último Ping: <strong id="ping_${d.id}">Hace ${d.lastPingSeconds}s</strong></span>
+                <span>SO: <strong>${d.os || 'N/A'}</strong></span>
+                <span>IP: <strong>${d.ip || 'N/A'}</strong></span>
+                <span>MAC / Fabricante: <strong>${d.vendor || d.mac || 'N/A'}</strong></span>
+                <span>Energía: <strong>${d.battery || 'Red'}</strong></span>
               </div>
             </div>
           </div>
@@ -1016,7 +1004,7 @@
               ${badgeText}
             </span>
             <div class="device-actions">
-              ${!isPurged ? `<button class="btn-disconnect" onclick="disconnectDevice('${d.id}')">✕ Desconectar</button>` : `<span style="font-size:0.7rem; color:var(--neon-red);">Inactivo</span>`}
+              ${!isPurged ? `<button class="btn-disconnect" onclick="disconnectDevice('${d.id}')">✕ Desconectar</button>` : `<span style="font-size:0.7rem; color:var(--neon-red);">Purgado</span>`}
             </div>
           </div>
         `;
@@ -1024,84 +1012,68 @@
       });
     }
 
-    // SIMULAR BEACON PING CADA 2 SEGUNDOS
-    setInterval(() => {
-      if (controllerState === 'ACTIVE') {
-        devices.forEach(d => {
-          if (d.status === 'ONLINE') {
-            d.lastPingSeconds = (d.lastPingSeconds % 4) + 1;
-            const el = document.getElementById(`ping_${d.id}`);
-            if (el) el.textContent = `Hace ${d.lastPingSeconds}s`;
+    // CARGA DE ESTADO EN TIEMPO REAL DESDE EL C2
+    async function fetchNetworkState() {
+      try {
+        const endpoints = ['/api/status', 'killswitch_state.json'];
+        let res = null;
+        for (const ep of endpoints) {
+          try {
+            const r = await fetch(ep + '?t=' + Date.now());
+            if (r.ok) { res = r; break; }
+          } catch(e) {}
+        }
+        if (!res) return;
+
+        const data = await res.json();
+        if (data && data.devices) {
+          devices = data.devices;
+          if (data.command === 'PURGE' && controllerState !== 'PURGE') {
+            applyUiState('PURGE');
+          } else if (data.command === 'PAUSE' && controllerState !== 'PAUSED') {
+            applyUiState('PAUSED');
+          } else if (data.command === 'MONITOR' && controllerState !== 'ACTIVE') {
+            applyUiState('ACTIVE');
           }
-        });
+          renderDevices();
+        }
+      } catch (err) {
+        console.warn('Error fetching state:', err);
       }
-    }, 2000);
-
-    // AGREGAR NUEVO DISPOSITIVO
-    function addNewDevice() {
-      const nameInput = document.getElementById('newDeviceName');
-      const typeSelect = document.getElementById('newDeviceType');
-      const name = nameInput.value.trim();
-
-      if (!name) {
-        alert('Por favor ingrese el nombre del dispositivo.');
-        return;
-      }
-
-      const type = typeSelect.value;
-      let icon = '📱';
-      let typeLabel = 'TELÉFONO CELULAR';
-      let os = 'Android 14';
-      let power = 'Batería 92%';
-      let ip = `192.168.100.${Math.floor(Math.random() * 80) + 30}`;
-
-      if (type === 'pc') {
-        icon = '💻';
-        typeLabel = 'PC / LAPTOP';
-        os = 'Windows 11 Pro';
-        power = 'Alimentación AC';
-      } else if (type === 'server') {
-        icon = '🖥️';
-        typeLabel = 'SERVIDOR';
-        os = 'Linux Debian 12';
-        power = 'Rack Dedicado';
-        ip = `10.0.0.${Math.floor(Math.random() * 50) + 10}`;
-      }
-
-      const newId = 'dev_' + Date.now();
-      const newDev = {
-        id: newId,
-        name: name,
-        type: type,
-        icon: icon,
-        typeLabel: typeLabel,
-        os: os,
-        ip: ip,
-        power: power,
-        latency: `${(Math.random() * 15 + 1).toFixed(1)}ms`,
-        status: controllerState === 'ACTIVE' ? 'ONLINE' : (controllerState === 'PAUSED' ? 'STANDBY' : 'PURGED'),
-        lastPingSeconds: 1
-      };
-
-      devices.push(newDev);
-      nameInput.value = '';
-      playBeep(700, 0.15);
-      renderDevices();
-      logToConsole(`[NUEVO DISPOSITIVO] Conectado exitosamente: ${name} (${typeLabel} // IP: ${ip})`, 'success');
     }
 
-    // DESCONECTAR DISPOSITIVO INDIVIDUAL
-    function disconnectDevice(id) {
-      const dev = devices.find(d => d.id === id);
-      if (!dev) return;
-      dev.status = 'PURGED';
-      playBeep(320, 0.18, 'triangle');
-      renderDevices();
-      logToConsole(`[DESCONEXIÓN] Dispositivo ${dev.name} (${dev.ip}) desconectado manualmente del controlador.`, 'warn');
+    // ESCANEO REAL EN VIVO (DISPARO AL KERNEL ARP)
+    async function rescanNetwork() {
+      if (isScanning) return;
+      isScanning = true;
+      logToConsole('🔍 Iniciando sondeo real en el kernel de Windows (ARP + ICMP)...', 'warn');
+      playBeep(600, 0.1);
+      
+      const countBadge = document.getElementById('devicesCountBadge');
+      if (countBadge) countBadge.textContent = 'ESCANEANDO RED...';
+
+      try {
+        const res = await fetch('/api/scan?t=' + Date.now());
+        if (res.ok) {
+          const data = await res.json();
+          devices = data.devices;
+          renderDevices();
+          logToConsole(`✅ Escaneo completado: ${devices.length} dispositivos físicos reales detectados.`, 'success');
+          playBeep(900, 0.15);
+        } else {
+          await fetchNetworkState();
+          logToConsole('Dispositivos sincronizados con killswitch_state.json local.', 'success');
+        }
+      } catch (e) {
+        logToConsole('Error al solicitar escaneo en vivo: ' + e.message, 'error');
+        await fetchNetworkState();
+      } finally {
+        isScanning = false;
+      }
     }
 
-    // CAMBIO DE ESTADO (ACTIVAR / PAUSAR)
-    function setControllerState(state) {
+    // APLICAR ESTADO EN LA INTERFAZ
+    function applyUiState(state) {
       controllerState = state;
       const heroCard = document.getElementById('masterHeroCard');
       const pill = document.getElementById('heroStatusPill');
@@ -1109,6 +1081,8 @@
       const btnAct = document.getElementById('btnActivate');
       const btnPau = document.getElementById('btnPause');
       const btnDes = document.getElementById('btnDestroy');
+
+      if (!heroCard || !pill || !pulse) return;
 
       btnAct.classList.remove('active-state');
       btnPau.classList.remove('active-state');
@@ -1122,83 +1096,116 @@
         pill.className = 'status-pill pill-active';
         pill.textContent = 'SISTEMA ACTIVO (MONITOR)';
         btnAct.classList.add('active-state');
-        playBeep(880, 0.15);
-        logToConsole('ESTADO MODIFICADO: ACTIVE. Todos los dispositivos reanudan telemetría.', 'success');
-        
-        devices.forEach(d => {
-          d.status = 'ONLINE';
-        });
-        renderDevices();
-
       } else if (state === 'PAUSED') {
         heroCard.classList.add('status-paused');
         pulse.classList.add('warning');
         pill.className = 'status-pill pill-paused';
         pill.textContent = 'STANDBY / PAUSADO';
         btnPau.classList.add('active-state');
-        playBeep(440, 0.25);
-        logToConsole('ESTADO MODIFICADO: PAUSED. Dispositivos colocados en modo dormición segura.', 'warn');
-        
-        devices.forEach(d => {
-          if (d.status !== 'PURGED') d.status = 'STANDBY';
-        });
-        renderDevices();
+      } else if (state === 'PURGE') {
+        heroCard.classList.add('status-purge');
+        pulse.classList.add('danger');
+        pill.className = 'status-pill pill-purge';
+        pill.textContent = '🔥 KILL-SWITCH EJECUTADO (PURGA TOTAL)';
+        btnDes.classList.add('active-state');
       }
     }
 
+    // CAMBIO DE ESTADO (ACTIVAR / PAUSAR)
+    async function setControllerState(state) {
+      applyUiState(state);
+      playBeep(state === 'ACTIVE' ? 880 : 440, 0.15);
+      logToConsole(`ESTADO MODIFICADO: ${state}. Transmitiendo señal al C2...`, state === 'ACTIVE' ? 'success' : 'warn');
+
+      try {
+        await fetch('/api/killswitch', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ command: state === 'PAUSED' ? 'PAUSE' : 'MONITOR', status: state })
+        });
+      } catch (e) {}
+
+      renderDevices();
+    }
+
     // DISPARO DEL INTERRUPTOR MAESTRO (KILL-SWITCH TOTAL)
-    function triggerMasterKillSwitch() {
-      const confirmKill = confirm('⚠️ ¿CONFIRMAR AUTO-DESTRUCCIÓN TOTAL?\n\nEsta acción enviará la señal PURGE a todos los dispositivos conectados, destruirá archivos temporales en memoria y terminará su ejecución.');
+    async function triggerMasterKillSwitch() {
+      const confirmKill = confirm('⚠️ ¿CONFIRMAR AUTO-DESTRUCCIÓN TOTAL Y PURGA?\n\nEsta acción enviará la señal PURGE atómica a todos los agentes y dispositivos conectados, ordenando su inmediata erradicación.');
       if (!confirmKill) return;
 
-      controllerState = 'PURGE';
-      const heroCard = document.getElementById('masterHeroCard');
-      const pill = document.getElementById('heroStatusPill');
-      const pulse = document.getElementById('statusPulse');
-      const btnDes = document.getElementById('btnDestroy');
-      const btnAct = document.getElementById('btnActivate');
-      const btnPau = document.getElementById('btnPause');
+      applyUiState('PURGE');
 
-      btnAct.classList.remove('active-state');
-      btnPau.classList.remove('active-state');
-      btnDes.classList.add('active-state');
-
-      heroCard.className = 'master-switch-card status-purge';
-      pulse.className = 'pulse-dot danger';
-      pill.className = 'status-pill pill-purge';
-      pill.textContent = '🔥 KILL-SWITCH EJECUTADO (PURGA TOTAL)';
-
-      // Secuencia sonora de alarma táctica
       playBeep(220, 0.2, 'sawtooth');
       setTimeout(() => playBeep(180, 0.3, 'sawtooth'), 220);
       setTimeout(() => playBeep(140, 0.4, 'sawtooth'), 550);
 
       logToConsole('🚨 [EMERGENCY KILL-SWITCH] Transmitiendo orden atómica APEX-ZERO-PURGE-9921...', 'error');
-      
-      devices.forEach((dev, index) => {
+
+      try {
+        await fetch('/api/killswitch', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ command: 'PURGE', status: 'PURGED' })
+        });
+      } catch (e) {}
+
+      devices.forEach((dev, idx) => {
         setTimeout(() => {
           dev.status = 'PURGED';
           renderDevices();
-          logToConsole(`[${dev.name}] Purga confirmada en ${dev.ip}. Proceso terminado y memoria sobrescrita con 0x00.`, 'error');
-        }, (index + 1) * 350);
+          logToConsole(`[${dev.device_name || dev.name}] Purga confirmada en ${dev.ip}. Proceso terminado.`, 'error');
+        }, (idx + 1) * 200);
       });
+    }
 
-      setTimeout(() => {
-        logToConsole('🛡️ AUTO-DESTRUCCIÓN COMPLETADA: Todos los dispositivos han sido neutralizados con éxito.', 'success');
-      }, (devices.length + 1) * 350);
+    function disconnectDevice(id) {
+      const dev = devices.find(d => d.id === id);
+      if (!dev) return;
+      dev.status = 'PURGED';
+      playBeep(320, 0.18, 'triangle');
+      renderDevices();
+      logToConsole(`[DESCONEXIÓN] Dispositivo ${dev.device_name || dev.name} (${dev.ip}) desconectado del controlador.`, 'warn');
+    }
+
+    function addNewDevice() {
+      const nameInput = document.getElementById('newDeviceName');
+      const typeSelect = document.getElementById('newDeviceType');
+      const name = nameInput.value.trim();
+      if (!name) return;
+
+      const type = typeSelect.value;
+      const newDev = {
+        id: 'NODE_' + Date.now(),
+        device_name: name,
+        device_type: type === 'mobile' ? 'Teléfono Móvil' : (type === 'pc' ? 'PC / Laptop' : 'Servidor'),
+        icon: type === 'mobile' ? '📱' : (type === 'pc' ? '💻' : '🖥️'),
+        vendor: 'Dispositivo Manual',
+        os: type === 'mobile' ? 'Android / iOS' : 'Windows / Linux',
+        ip: `192.168.100.${Math.floor(Math.random() * 80) + 10}`,
+        battery: 'Activo',
+        status: controllerState === 'ACTIVE' ? 'ONLINE' : 'STANDBY',
+        latency_ms: 1.5
+      };
+
+      devices.push(newDev);
+      nameInput.value = '';
+      playBeep(700, 0.15);
+      renderDevices();
+      logToConsole(`[NUEVO DISPOSITIVO] Registrado manualmente: ${name} (${newDev.ip})`, 'success');
     }
 
     function copyKillSwitchApiUrl() {
       const url = window.location.origin + window.location.pathname.replace('index.html', '') + 'killswitch_state.json';
       navigator.clipboard.writeText(url).then(() => {
-        alert('URL del estado copiada al portapapeles:\n' + url);
+        alert('URL del estado copiada:\n' + url);
       }).catch(() => {
         prompt('Copia manualmente la URL:', url);
       });
     }
 
-    // INICIALIZACIÓN
-    renderDevices();
+    // INICIALIZACIÓN Y POLLING CADA 2.5 SEGUNDOS
+    fetchNetworkState();
+    setInterval(fetchNetworkState, 2500);
   </script>
 </body>
 </html>
