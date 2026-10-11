@@ -1,44 +1,53 @@
 {
   "system": "APEX_KILLSWITCH_C2",
-  "version": "2.4.0",
-  "updated_at": "2026-10-10T21:15:00Z",
+  "version": "2.5.0",
+  "updated_at": "2026-10-10T21:20:00Z",
   "status": "ACTIVE",
   "kill_switch_engaged": false,
   "purge_token": "APEX-ZERO-PURGE-9921",
   "command": "MONITOR",
-  "active_nodes_count": 3,
-  "nodes": [
+  "active_devices_count": 3,
+  "devices": [
     {
       "id": "NODE_WIN11_HOST",
-      "os": "Windows 11 Pro (Win32)",
+      "device_name": "PC-WIN11-MASTER",
+      "device_type": "PC / Laptop",
+      "os": "Windows 11 Pro 64-bit",
       "ip": "192.168.100.7",
+      "battery": "AC Power (100%)",
       "status": "ONLINE",
-      "last_beacon": "2026-10-10T21:14:52Z",
+      "last_beacon": "2026-10-10T21:20:00Z",
       "latency_ms": 0.4
     },
     {
       "id": "NODE_MOBILE_ANDROID",
+      "device_name": "SMARTPHONE-GALAXY",
+      "device_type": "Teléfono Móvil",
       "os": "Android 14 ARM64",
       "ip": "192.168.100.24",
+      "battery": "84% (Battery)",
       "status": "ONLINE",
-      "last_beacon": "2026-10-10T21:14:48Z",
+      "last_beacon": "2026-10-10T21:19:58Z",
       "latency_ms": 12.8
     },
     {
       "id": "NODE_COLAB_GPU",
+      "device_name": "SERVER-COLAB-GPU",
+      "device_type": "Servidor Cloud",
       "os": "Ubuntu 22.04 LTS / Tesla T4",
       "ip": "34.125.88.19",
+      "battery": "Grid Power",
       "status": "ONLINE",
-      "last_beacon": "2026-10-10T21:14:55Z",
+      "last_beacon": "2026-10-10T21:19:55Z",
       "latency_ms": 28.5
     }
   ],
   "audit_log": [
     {
-      "timestamp": "2026-10-10T21:15:00Z",
-      "action": "SYSTEM_START",
+      "timestamp": "2026-10-10T21:20:00Z",
+      "action": "DEVICES_SYNC",
       "actor": "ADMIN_OPERATOR",
-      "detail": "Interruptor C2 y matriz de supervisión inicializada en GitHub."
+      "detail": "3 dispositivos activos sincronizados con el interruptor C2."
     }
   ]
 }
